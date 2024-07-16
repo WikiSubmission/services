@@ -23,7 +23,7 @@ export default function route(): APIEndpoint {
     },
     handler: async (req, res) => {
       const ENV_GOOGLE_API_KEY =
-        await SystemUtilities.getEnvFromAWS("GOOGLE_API_KEY");
+        await SystemUtilities.getEnvFromSupabase("GOOGLE_API_KEY");
 
       const requestQuery = req.query?.q?.toString();
 

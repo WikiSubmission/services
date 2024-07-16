@@ -206,12 +206,12 @@ export class DiscordBot {
       "1h",
       async () => {
         return {
-          token: await SystemUtilities.getEnvFromAWS(
+          token: await SystemUtilities.getEnvFromSupabase(
             process.env.NODE_ENV === "production"
               ? "DISCORD_TOKEN"
               : "DISCORD_TOKEN_DEV",
           ),
-          clientId: await SystemUtilities.getEnvFromAWS(
+          clientId: await SystemUtilities.getEnvFromSupabase(
             process.env.NODE_ENV === "production"
               ? "DISCORD_CLIENT_ID"
               : "DISCORD_CLIENT_ID_DEV",

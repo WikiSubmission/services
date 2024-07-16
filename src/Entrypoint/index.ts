@@ -7,7 +7,7 @@
  * Run `npm run install` to install dependencies.
  * Use `npm run services` to compile and start the application.
  * Use `npm run service:[service-name]` to launch only a specific service.
- * Use `npm run docker` in production environment.
+ * Use `npm run docker` in a machine with docker to reverse proxy all requests from port 80.
  */
 
 import dotenv from "dotenv";
@@ -41,21 +41,18 @@ function preLaunch() {
 
 /**
  * @function loadEnvironment
- * @description Sets the environment variables. Only AWS credentials are required upfront. All others are fetched on-demand.
+ * @description Sets the environment variables. Only Supabase credentials are required upfront. All others are fetched on-demand.
  */
 async function loadEnvironment() {
   dotenv.config();
   if (
-    process.env.AWS_ACCESS_KEY &&
-    process.env.AWS_SECRET_KEY &&
-    process.env.AWS_REGION
+    process.env.SUPABASE_URL &&
+    process.env.SUPABASE_API_KEY
   ) {
     WikiEvents.emit("system:launch", `Environment variables loaded\n`);
-    process.env.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY;
-    process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_KEY;
   } else {
     throw new Error(
-      `Missing environment variables: AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION`,
+      `Missing environment variables: SUPABASE_URL, SUPABASE_API_KEY`,
     );
   }
 }

@@ -2,16 +2,10 @@ import { v4 as uuidv4 } from "uuid";
 import { PromiseWithChild, exec } from "child_process";
 import { WikiEvents } from "../Modules/LogsModule";
 import { EnvironmentVariables } from "../Vars/EnvironmentVariables";
-import {
-  DynamoDBClient,
-  GetItemCommand,
-  DynamoDBServiceException,
-} from "@aws-sdk/client-dynamodb";
 import { WikiCache } from "../Modules/CachingModule";
 import util from "util";
 import { TimeStrings } from "../Vars/TimeStrings";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { WikiDatabase } from "../Modules/DatabaseModule";
 
 export class SystemUtilities {
   static getEnv(
@@ -28,48 +22,35 @@ export class SystemUtilities {
     return result ? result : null;
   }
 
-  // To avoid having a long list of environment variables provided upfront, we will fetch it from a DynamoDB table when actually needed. Function is cached to avoid excess calls.
-  static async getEnvFromAWS(secret: EnvironmentVariables): Promise<string> {
+  static async getEnvFromSupabase(secret: EnvironmentVariables, throwErrorOnFail?: boolean): Promise<string> {
     return await SystemUtilities.cachedFunction(
-      `cloudEnv:${secret}`,
+      `Env:${secret}`,
       "5m",
       async () => {
         try {
-          const data = await new DynamoDBClient({
-            region: "us-west-2",
-            credentials: {
-              accessKeyId: process.env.AWS_ACCESS_KEY!,
-              secretAccessKey: process.env.AWS_SECRET_KEY!,
-            },
-          }).send(
-            new GetItemCommand({
-              TableName: "wikisubmission-services-secrets",
-              Key: {
-                key: {
-                  S: secret,
-                },
-              },
-            }),
-          );
+          const client = await this.getSupabaseClient();
 
-          if (data && data.Item && data.Item.value?.S) {
-            return `${data.Item.value.S}`;
+          const request = await client
+            .from("Secrets")
+            .select("*")
+            .eq("key", secret)
+            .single()
+
+          if (request && request.status === 200 && request.data?.value) {
+            return request.data.value as string;
           } else {
-            throw new Error(`Could not find secret "${secret}" from AWS`);
+            if (throwErrorOnFail) {
+              throw new Error(`Failed to get environment variable: ${secret}`);
+            } else {
+              console.warn(`Failed to get environment variable: ${secret}`);
+              return '';
+            }
           }
         } catch (error: any) {
-          if (error instanceof DynamoDBServiceException) {
-            throw new Error(
-              `${error.$metadata.httpStatusCode} ${error.name} - ${error.message}`,
-            );
-          } else {
-            throw new Error(
-              `Error retrieving secret ${secret}: ${error?.message || "--"}`,
-            );
-          }
+          throw new Error(`Supabase client error: ${error?.message || '--'}`);
         }
-      },
-    );
+      }
+    )
   }
 
   static async cachedFunction<T>(
@@ -93,9 +74,7 @@ export class SystemUtilities {
       `SupabaseClient`,
       "30m",
       async () => {
-        const url = await SystemUtilities.getEnvFromAWS("SUPABASE_URL");
-        const key = await SystemUtilities.getEnvFromAWS("SUPABASE_API_KEY");
-        return createClient(url, key);
+        return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_API_KEY!);
       },
     );
   }
