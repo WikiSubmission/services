@@ -209,6 +209,7 @@ export class WikiDatabase {
           console.error(
             `Table "${table.tableName}" could not be synced - does it exist?`,
           );
+          console.log(request);
           throw new Error();
         }
       } catch (error) {
