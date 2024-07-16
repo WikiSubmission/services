@@ -75,10 +75,7 @@ export class FileUtils {
         : `/${directoryInServicesFolder}`,
     );
 
-    console.log(`---\nTarget Directory: ${targetDirectory}`);
-
     if (!fs.existsSync(targetDirectory)) {
-      console.warn(`Directory does not exist: ${targetDirectory}`);
       return [];
     }
 
@@ -88,7 +85,6 @@ export class FileUtils {
       directory: string,
       isRoot: boolean,
     ): Promise<void> {
-      console.log(`Reading directory: ${directory}`);
       const files = fs.readdirSync(directory);
       for (const file of files) {
         const filePath = path.join(directory, file);
@@ -110,7 +106,6 @@ export class FileUtils {
           }
         } else if (stats.isFile()) {
           try {
-            console.log(`Importing module: ${filePath}`);
             const module = filePath.endsWith(".js")
               ? await import(filePath)
               : await FileUtils.importTsModule(filePath);
