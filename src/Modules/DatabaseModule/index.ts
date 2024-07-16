@@ -206,11 +206,10 @@ export class WikiDatabase {
             }
           }
         } else {
-          console.error(
+          console.log(request);
+          throw new Error(
             `Table "${table.tableName}" could not be synced - does it exist?`,
           );
-          console.log(request);
-          throw new Error();
         }
       } catch (error) {
         console.error(error);
@@ -230,7 +229,6 @@ export class WikiDatabase {
     ) => Promise<void>,
   ) {
     if (!this.supabaseClient) return; // Assert access.
-    WikiEvents.emit("database:launch", `>   "${table.tableName}" auto sync ON`);
     this.supabaseClient
       .channel(`changes:${table.tableName}`)
       .on(
@@ -245,5 +243,6 @@ export class WikiDatabase {
         },
       )
       .subscribe();
+    WikiEvents.emit("database:launch", `>   "${table.tableName}" auto sync ON`);
   }
 }

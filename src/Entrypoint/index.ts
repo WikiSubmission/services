@@ -45,10 +45,7 @@ function preLaunch() {
  */
 async function loadEnvironment() {
   dotenv.config();
-  if (
-    process.env.SUPABASE_URL &&
-    process.env.SUPABASE_API_KEY
-  ) {
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_API_KEY) {
     WikiEvents.emit("system:launch", `Environment variables loaded\n`);
   } else {
     throw new Error(

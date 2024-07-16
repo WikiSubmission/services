@@ -6,6 +6,7 @@ import { WikiCache } from "../Modules/CachingModule";
 import util from "util";
 import { TimeStrings } from "../Vars/TimeStrings";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { S3Client } from "@aws-sdk/client-s3";
 
 export class SystemUtilities {
   static getEnv(
@@ -22,7 +23,10 @@ export class SystemUtilities {
     return result ? result : null;
   }
 
-  static async getEnvFromSupabase(secret: EnvironmentVariables, throwErrorOnFail?: boolean): Promise<string> {
+  static async getEnvFromSupabase(
+    secret: EnvironmentVariables,
+    throwErrorOnFail?: boolean,
+  ): Promise<string> {
     return await SystemUtilities.cachedFunction(
       `Env:${secret}`,
       "5m",
@@ -34,7 +38,7 @@ export class SystemUtilities {
             .from("Secrets")
             .select("*")
             .eq("key", secret)
-            .single()
+            .single();
 
           if (request && request.status === 200 && request.data?.value) {
             return request.data.value as string;
@@ -43,14 +47,14 @@ export class SystemUtilities {
               throw new Error(`Failed to get environment variable: ${secret}`);
             } else {
               console.warn(`Failed to get environment variable: ${secret}`);
-              return '';
+              return "";
             }
           }
         } catch (error: any) {
-          throw new Error(`Supabase client error: ${error?.message || '--'}`);
+          throw new Error(`Supabase client error: ${error?.message || "--"}`);
         }
-      }
-    )
+      },
+    );
   }
 
   static async cachedFunction<T>(
@@ -74,9 +78,27 @@ export class SystemUtilities {
       `SupabaseClient`,
       "30m",
       async () => {
-        return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_API_KEY!);
+        return createClient(
+          process.env.SUPABASE_URL!,
+          process.env.SUPABASE_API_KEY!,
+        );
       },
     );
+  }
+
+  static async getAWSClient(): Promise<S3Client> {
+    return await SystemUtilities.cachedFunction(`S3Client`, "30m", async () => {
+      const accessKeyId = await this.getEnvFromSupabase("AWS_ACCESS_KEY");
+      const secretAccessKey = await this.getEnvFromSupabase("AWS_SECRET_KEY");
+      const region = await this.getEnvFromSupabase("AWS_REGION");
+      return new S3Client({
+        credentials: {
+          accessKeyId,
+          secretAccessKey,
+        },
+        region,
+      });
+    });
   }
 
   static async stimulateDelay(ms: number) {

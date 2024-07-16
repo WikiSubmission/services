@@ -1,7 +1,8 @@
 export type EnvironmentVariables =
   | "NODE_ENV"
-  | "SUPABASE_URL"
-  | "SUPABASE_API_KEY"
+  | "AWS_ACCESS_KEY"
+  | "AWS_SECRET_KEY"
+  | "AWS_REGION"
   | "GOOGLE_API_KEY"
   | "DISCORD_TOKEN"
   | "DISCORD_CLIENT_ID"

@@ -24,16 +24,13 @@ export interface PutObjectCommandOutputExtended extends PutObjectCommandOutput {
 }
 
 export class S3Utils {
-  static client = new S3Client({
-    region: process.env.AWS_REGION!,
-  });
-
   static async listObjects(additionalParams?: ListObjectsV2CommandInput) {
     return await SystemUtilities.cachedFunction(
       "S3ListObjects",
       "3s",
       async () => {
-        const response = await this.client.send(
+        const client = await SystemUtilities.getAWSClient();
+        const response = await client.send(
           new ListObjectsV2Command({
             ...additionalParams,
             Bucket: "wikisubmission",
@@ -50,7 +47,9 @@ export class S3Utils {
     additionalParams?: GetObjectCommandInput,
   ): Promise<GetObjectCommandOutputExtended | null> {
     try {
-      const response = await this.client.send(
+      const client = await SystemUtilities.getAWSClient();
+
+      const response = await client.send(
         new GetObjectCommand({
           ...additionalParams,
           Key: key,
@@ -76,13 +75,15 @@ export class S3Utils {
     additionalParams?: PutObjectCommandInput,
   ): Promise<PutObjectCommandOutputExtended | null> {
     try {
+      const client = await SystemUtilities.getAWSClient();
+
       const response = await fetch(url);
       if (!response.ok) return null;
 
       const buffer = Buffer.from(await response.arrayBuffer());
       const bodyStream = Readable.from(buffer);
 
-      const result = await this.client.send(
+      const result = await client.send(
         new PutObjectCommand({
           ...additionalParams,
           Key: key,
