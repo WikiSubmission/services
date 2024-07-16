@@ -1,0 +1,9 @@
+export type EnvironmentVariables =
+  | "NODE_ENV"
+  | "SUPABASE_URL"
+  | "SUPABASE_API_KEY"
+  | "GOOGLE_API_KEY"
+  | "DISCORD_TOKEN"
+  | "DISCORD_CLIENT_ID"
+  | "DISCORD_TOKEN_DEV"
+  | "DISCORD_CLIENT_ID_DEV";
