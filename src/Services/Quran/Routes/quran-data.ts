@@ -21,6 +21,7 @@ export default function route(): APIEndpoint {
         type: "application/json",
         size,
         body: data,
+        forceDownload: true
       });
     },
   };
