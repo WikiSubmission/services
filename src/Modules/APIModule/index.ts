@@ -230,7 +230,7 @@ export class WikiAPI {
 
         res.setHeader(
           "Content-Disposition",
-          `${req.query.dl === "true" ? "attachment" : "inline"}; filename=${fileResponse.name}.${fileResponse.extension}`,
+          `${req.query.dl === "true" ? "attachment" : fileResponse.forceDownload === true ? "attachment" : "inline"}; filename=${fileResponse.name}.${fileResponse.extension}`,
         );
 
         res.setHeader("Cache-Control", "public, max-age=3600");

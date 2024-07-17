@@ -24,6 +24,7 @@ export interface APIFileResponseParams {
   body: any;
   extension: string;
   size: number;
+  forceDownload?: boolean;
 }
 
 /**
@@ -69,6 +70,7 @@ export class APIFileResponse implements APIFileResponseParams {
   body: any;
   extension: string;
   size: number;
+  forceDownload?: boolean;
 
   constructor(data: APIFileResponseParams) {
     this.name = data.name;
@@ -76,6 +78,7 @@ export class APIFileResponse implements APIFileResponseParams {
     this.body = data.body;
     this.extension = data.extension;
     this.size = data.size;
+    this.forceDownload = data.forceDownload;
   }
 }
 
