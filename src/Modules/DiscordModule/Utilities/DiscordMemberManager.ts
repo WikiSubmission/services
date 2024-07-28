@@ -163,11 +163,11 @@ export class DiscordMemberManager {
                 },
                 ...(rolesRemoved.length || 0 > 0
                   ? [
-                      {
-                        name: "Replaced",
-                        value: `– ${rolesRemoved.map((role) => `<@&${DiscordBot.shared.client.guilds.cache.find((g) => g.id === this.moderatedGuild?.id)?.roles.cache.find((r) => r.name === role || r.id === role)?.id}>`).join(" ")}`,
-                      },
-                    ]
+                    {
+                      name: "Replaced",
+                      value: `– ${rolesRemoved.map((role) => `<@&${DiscordBot.shared.client.guilds.cache.find((g) => g.id === this.moderatedGuild?.id)?.roles.cache.find((r) => r.name === role || r.id === role)?.id}>`).join(" ")}`,
+                    },
+                  ]
                   : []),
               )
               .setColor("DarkNavy")
@@ -318,16 +318,23 @@ export class DiscordMemberManager {
     }
 
     // Remove suspect member role.
-    const addRole = await this.addRole(
-      this.moderatedGuild.jail?.jailRoleId || null,
-      `Jailed by ${resolvedExecutor.member.user.username}`,
-      true,
-    );
     const removeRole = await this.removeRole(
       this.moderatedGuild.keyRoles.member,
       `Jailed by ${resolvedExecutor.member.user.username}`,
       true,
     );
+
+    // Add jail role.
+    const addRole = await this.addRole(
+      this.moderatedGuild.jail?.jailRoleId || null,
+      `Jailed by ${resolvedExecutor.member.user.username}`,
+      true,
+    );
+
+    // Remove 'new member' role, if applicable.
+    if (this.hasRole(this.moderatedGuild.keyRoles.newMember)) {
+      await this.removeRole(this.moderatedGuild.keyRoles.newMember);
+    }
 
     // Success case.
     if (addRole === "ADDED" && removeRole === "REMOVED") {
@@ -429,12 +436,14 @@ export class DiscordMemberManager {
       return new Error(`User is not jailed`);
     }
 
-    // Remove jail role and add member role.
+    // Remove jail role.
     const removeRole = await this.removeRole(
       this.moderatedGuild.jail?.jailRoleId || null,
       `Unjailed by ${resolvedExecutor.member.user.username}`,
       true,
     );
+
+    // Add member role.
     const addRole = await this.addRole(
       this.moderatedGuild.keyRoles.member,
       `Unjailed by ${resolvedExecutor.member.user.username}`,
