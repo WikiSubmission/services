@@ -130,7 +130,9 @@ export class DiscordBot {
       // Global commands.
       try {
         await rest.put(Routes.applicationCommands(clientId), {
-          body: DiscordUtilities.parseCommands(slashCommands.filter(i => i.guildSpecific === undefined)),
+          body: DiscordUtilities.parseCommands(
+            slashCommands.filter((i) => i.guildSpecific === undefined),
+          ),
         });
         WikiEvents.emit(
           "discord:launch",
