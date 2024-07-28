@@ -83,7 +83,7 @@ export class DiscordBot {
     );
     await new DiscordAlert("1080271049377202177").send("DEV-SYSTEMLOG", {
       content: `\`\`\`Online.\`\`\``,
-      flags: ["SuppressNotifications"]
+      flags: ["SuppressNotifications"],
     });
   }
 
@@ -330,17 +330,14 @@ export class DiscordBot {
    */
 
   logInteraction(interaction: CommandInteraction | ButtonInteraction) {
-      WikiEvents.emit(
-        "discord:interactionCreate",
-        interaction,
-      );
+    WikiEvents.emit("discord:interactionCreate", interaction);
 
-      if (interaction instanceof CommandInteraction) { 
-        new DiscordAlert("1080271049377202177").send("DEV-EVENTLOG", {
-          content: `\`\`\`[interactionCreate] ${DiscordUtilities.parseInteraction(interaction)}\`\`\``,
-          flags: ["SuppressNotifications"],
-        });
-      }
+    if (interaction instanceof CommandInteraction) {
+      new DiscordAlert("1080271049377202177").send("DEV-EVENTLOG", {
+        content: `\`\`\`[interactionCreate] ${DiscordUtilities.parseInteraction(interaction)}\`\`\``,
+        flags: ["SuppressNotifications"],
+      });
+    }
   }
 
   logEvent(event: keyof ClientEvents, description: string) {

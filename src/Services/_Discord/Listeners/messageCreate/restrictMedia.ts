@@ -49,7 +49,7 @@ export default function listener(): void {
     if (
       resolvedAuthor.member.joinedTimestamp &&
       (Date.now() - resolvedAuthor.member.joinedTimestamp) / (1000 * 60 * 60) >
-      DiscordConfig.mediaRestrictionHours
+        DiscordConfig.mediaRestrictionHours
     ) {
       return;
     }
@@ -88,7 +88,8 @@ export default function listener(): void {
               },
               { name: "Content", value: `\`\`\`${message.content}\`\`\`` },
               {
-                name: "Channel", value: `<#${message.channel.id}>`
+                name: "Channel",
+                value: `<#${message.channel.id}>`,
               },
               {
                 name: "Block Reason",
@@ -155,7 +156,7 @@ export default function listener(): void {
                 },
                 {
                   name: "Channel",
-                  value: `<#${message.channel.id}>`
+                  value: `<#${message.channel.id}>`,
                 },
                 {
                   name: "Block Reason",
