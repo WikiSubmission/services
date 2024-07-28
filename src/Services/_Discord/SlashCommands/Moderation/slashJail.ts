@@ -39,6 +39,7 @@ export default function command(): WikiSlashCommand {
         name: i.name,
         id: i.id,
       })),
+    disabledInDM: true,
     handler: async (interaction) => {
       await interaction.deferReply({ ephemeral: true });
 
