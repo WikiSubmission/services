@@ -58,7 +58,7 @@ export default function listener(): void {
               oldState.guild.id,
             );
             await channel?.send({
-              content: `<@${oldState.member.id}> has left ${oldState.channel}`,
+              content: `\`${oldState.member.displayName || oldState.member.user.username}\` has left ${oldState.channel}`,
             });
           }
 
