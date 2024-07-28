@@ -11,7 +11,7 @@ import { TimeStrings } from "../../../Vars/TimeStrings";
  * Endpoint definition structure
  */
 export interface APIEndpoint {
-  route: `/${string}`;
+  route: `/${string}` | `*${string}`;
   method: "get" | "post" | "put" | "patch";
   handler: (
     req: Request,
