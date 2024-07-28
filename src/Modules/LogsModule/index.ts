@@ -51,20 +51,8 @@ class WikiSubmissionEvents {
   }
 
   private systemLogs() {
-    events.on("system:launch", (data?: string) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [SYSTEM] ${data}`,
-        );
-      }
-    });
-
-    events.on("system:error", (data?: string) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [SYSTEM] [ERROR] ${data}`,
-        );
-      }
+    ["launch", "error"].forEach((event) => {
+      this.stringEvents(`service:${event}`);
     });
 
     events.on("system:critical-error", (data?: string) => {
@@ -78,30 +66,14 @@ class WikiSubmissionEvents {
   }
 
   private serviceLogs() {
-    events.on("service:launch", (data?: string) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [SERVICE] ${data}`,
-        );
-      }
-    });
-
-    events.on("service:error", (data?: string) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [SERVICE] [ERROR] ${data}`,
-        );
-      }
+    ["launch", "error"].forEach((event) => {
+      this.stringEvents(`service:${event}`);
     });
   }
 
   private apiLogs() {
-    events.on("api:launch", (data?: string) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [API] ${data}`,
-        );
-      }
+    ["launch"].forEach((event) => {
+      this.stringEvents(`api:${event}`);
     });
 
     events.on("api:request", (data?: APIRequestEvent) => {
@@ -122,30 +94,14 @@ class WikiSubmissionEvents {
   }
 
   private databaseLogs() {
-    events.on("database:launch", (data?: string) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [DATABASE] ${data}`,
-        );
-      }
-    });
-
-    events.on("database:error", (data?: string) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [DATABASE] [ERROR] ${data}`,
-        );
-      }
+    ["launch", "error"].forEach((event) => {
+      this.stringEvents(`database:${event}`);
     });
   }
 
   private discordLogs() {
-    events.on("discord:launch", (data?: string) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [DISCORD] ${data}`,
-        );
-      }
+    ["launch", "guildMemberAdd", "guildMemberRemove", "guildBanAdd", "guildBanRemove"].forEach((event) => {
+      this.stringEvents(`discord:${event}`);
     });
     events.on(
       "discord:interactionCreate",
@@ -171,6 +127,15 @@ class WikiSubmissionEvents {
         );
       },
     );
+  }
+  private stringEvents(event: string) {
+    events.on(`${event}`, (data?: string) => {
+      if (data) {
+        console.log(
+          `[${new Date().toISOString().split("T")[1]}] [${event.split(":")[0].toUpperCase()}] ${data}`,
+        );
+      }
+    });
   }
 }
 
