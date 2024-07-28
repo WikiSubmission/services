@@ -36,7 +36,7 @@ export class DiscordBot {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildModeration,
       GatewayIntentBits.MessageContent,
-      GatewayIntentBits.DirectMessages
+      GatewayIntentBits.DirectMessages,
     ],
     presence: {
       status: "online",
@@ -83,6 +83,7 @@ export class DiscordBot {
     );
     await new DiscordAlert("1080271049377202177").send("DEV-SYSTEMLOG", {
       content: `\`\`\`Online.\`\`\``,
+      flags: ["SuppressNotifications"]
     });
   }
 
@@ -146,7 +147,7 @@ export class DiscordBot {
           `Synced GLOBAL commands (${slashCommands.length}) (${slashCommands.map((command) => `/${command.name}`).join(", ")})`,
         );
       } catch (error) {
-        console.error(error);
+        WikiEvents.emit("discord:error", "Failed to sync GLOBAL commands");
         WikiEvents.emit("discord:error", error);
       }
 
@@ -172,7 +173,10 @@ export class DiscordBot {
             `Synced GUILD commands (${allocatedCommands.length}) for "${this.client.guilds.cache.find((i) => i.id === guildId)?.name || "--"}" (${allocatedCommands.map((i) => `/${i.name}`).join(", ")})`,
           );
         } catch (error) {
-          WikiEvents.emit("discord:launch", `No access to GUILD ${guildId} - skipping.`)
+          WikiEvents.emit(
+            "discord:launch",
+            `No access to GUILD ${guildId} - skipping.`,
+          );
         }
       }
     } else {
@@ -326,18 +330,17 @@ export class DiscordBot {
    */
 
   logInteraction(interaction: CommandInteraction | ButtonInteraction) {
-    const summary = DiscordUtilities.parseInteraction(interaction);
-    if (summary) {
       WikiEvents.emit(
         "discord:interactionCreate",
-        `[interactionCreate] ${summary}`,
+        interaction,
       );
 
-      new DiscordAlert("1080271049377202177").send("DEV-EVENTLOG", {
-        content: `\`\`\`[interactionCreate] ${summary}\`\`\``,
-        flags: ["SuppressNotifications"]
-      });
-    }
+      if (interaction instanceof CommandInteraction) { 
+        new DiscordAlert("1080271049377202177").send("DEV-EVENTLOG", {
+          content: `\`\`\`[interactionCreate] ${DiscordUtilities.parseInteraction(interaction)}\`\`\``,
+          flags: ["SuppressNotifications"],
+        });
+      }
   }
 
   logEvent(event: keyof ClientEvents, description: string) {
@@ -345,27 +348,24 @@ export class DiscordBot {
 
     new DiscordAlert("1080271049377202177").send("DEV-EVENTLOG", {
       content: `\`\`\`[${event}] ${description}\`\`\``,
-      flags: ["SuppressNotifications"]
+      flags: ["SuppressNotifications"],
     });
   }
 
   logError(error: DiscordAPIError | Error | any, sourceHint?: string) {
-    const description = error instanceof DiscordAPIError
-      ? `[DiscordAPIError] ${error.name}: ${error.message} (${error.status})${sourceHint ? ` (${sourceHint})` : ""}`
-      : error instanceof Error
-        ? `[Internal Error] ${error.message}${sourceHint ? ` (${sourceHint})` : ""}`
-        : typeof error === "string"
-          ? `[Internal Error] ${error}${sourceHint ? ` (${sourceHint})` : ""}`
-          : `[Unknown Error] ${error?.message || "--"}${sourceHint ? ` (${sourceHint})` : ""}`;
+    const description =
+      error instanceof DiscordAPIError
+        ? `[DiscordAPIError] ${error.name}: ${error.message} (${error.status})${sourceHint ? ` (${sourceHint})` : ""}`
+        : error instanceof Error
+          ? `[Internal Error] ${error.message}${sourceHint ? ` (${sourceHint})` : ""}`
+          : typeof error === "string"
+            ? `[Internal Error] ${error}${sourceHint ? ` (${sourceHint})` : ""}`
+            : `[Unknown Error] ${error?.message || "--"}${sourceHint ? ` (${sourceHint})` : ""}`;
 
-    WikiEvents.emit(
-      "discord:error",
-      description,
-    );
+    WikiEvents.emit("discord:error", description);
 
     new DiscordAlert("1080271049377202177").send("DEV-ERRORLOG", {
-      content: `\`\`\`${description}\`\`\``
+      content: `\`\`\`${description}\`\`\``,
     });
-
   }
 }
