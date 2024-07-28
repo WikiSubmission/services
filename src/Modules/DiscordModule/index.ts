@@ -14,6 +14,7 @@ import { SystemUtilities } from "../../Utilities/SystemUtils";
 import { WikiEvents } from "../LogsModule";
 import { FileUtils } from "../../Utilities/FileUtils";
 import { DiscordUtilities } from "./Utilities/DiscordUtilities";
+import EventEmitter from "events";
 
 /**
  * @class DiscordBot
@@ -85,6 +86,7 @@ export class DiscordBot {
    * @description Executes default exports in /_Discord/Listener folder (which each should call the addEventListener() on the shared instance of this class)
    */
   async attachEventListeners() {
+    EventEmitter.defaultMaxListeners = 20;
     this.client.removeAllListeners();
     const listeners = await FileUtils.getDefaultExportsFromDirectory<
       () => void
