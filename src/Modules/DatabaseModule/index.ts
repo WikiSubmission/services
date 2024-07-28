@@ -11,17 +11,11 @@ import { DataQuranItem } from "./Types/DataQuran";
 import { DataMocMediaItem } from "./Types/DataMocMedia";
 import { DataNewslettersItem } from "./Types/DataNewsletters";
 import { SystemUtilities } from "../../Utilities/SystemUtils";
-import { DiscordDBMember } from "../DiscordModule/Types/DiscordDBMember";
-import { DiscordBlacklistedGuild } from "../DiscordModule/Types/BlacklistedGuild";
-import { DiscordBlacklistedUser } from "../DiscordModule/Types/BlacklistedUser";
 
 export type WikiTablesTypesMap = {
   DataQuran: DataQuranItem[];
   DataMocMedia: DataMocMediaItem[];
   DataNewsletters: DataNewslettersItem[];
-  DiscordMembers: DiscordDBMember[];
-  DiscordBlacklistedGuilds: DiscordBlacklistedGuild[];
-  DiscordBlacklistedUsers: DiscordBlacklistedUser[];
 };
 
 export type WikiTables = keyof WikiTablesTypesMap;
