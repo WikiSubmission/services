@@ -45,9 +45,6 @@ export default function listener(): void {
       (Date.now() - resolvedAuthor.member.joinedTimestamp) / (1000 * 60 * 60) >
         DiscordConfig.mediaRestrictionHours
     ) {
-      console.log(
-        `Joined: ${(Date.now() - resolvedAuthor.member.joinedTimestamp) / (1000 * 60 * 60)} (< 8)`,
-      );
       return;
     }
 
