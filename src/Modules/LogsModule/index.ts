@@ -100,9 +100,9 @@ class WikiSubmissionEvents {
   }
 
   private discordLogs() {
-    events.on("discord:event", (event: string, description: string) => {
-      if (event && description) {
-        console.log(`[${new Date().toISOString().split("T")[1]}] [DISCORD] [EVENT] [${event}] ${description}`);
+    events.on("discord:event", (description: string) => {
+      if (description) {
+        console.log(`[${new Date().toISOString().split("T")[1]}] [DISCORD] [EVENT] ${description}`);
       }
     })
     events.on(
