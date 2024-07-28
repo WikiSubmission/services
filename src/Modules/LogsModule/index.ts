@@ -100,9 +100,11 @@ class WikiSubmissionEvents {
   }
 
   private discordLogs() {
-    ["launch", "guildMemberAdd", "guildMemberRemove", "guildBanAdd", "guildBanRemove", "messageCreate"].forEach((event) => {
-      this.stringEvents(`discord:${event}`);
-    });
+    events.on("discord:event", (event: string, description: string) => {
+      if (event && description) {
+        console.log(`[${new Date().toISOString().split("T")[1]}] [DISCORD] [EVENT] [${event}] ${description}`);
+      }
+    })
     events.on(
       "discord:interactionCreate",
       (data?: CommandInteraction | ButtonInteraction) => {
