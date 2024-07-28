@@ -32,7 +32,7 @@ export default function listener(): void {
           )
           .setThumbnail(ban.user.displayAvatarURL())
           .setFooter({
-            text: banLog?.executor ? banLog.executor.displayName : "User Ban",
+            text: banLog?.executor?.displayName || "User Ban",
             iconURL: banLog?.executor
               ? banLog.executor.displayAvatarURL()
               : undefined,
