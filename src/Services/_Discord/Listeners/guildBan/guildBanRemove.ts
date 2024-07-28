@@ -38,7 +38,7 @@ export default function listener(): void {
               value: `\`${ban.user.id}\``,
             },
           )
-          .setThumbnail(ban.user.displayAvatarURL())
+          .setThumbnail(ban.user.displayAvatarURL() || null)
           .setFooter({
             text: unbanLog?.executor?.displayName || "User Unban",
             iconURL: unbanLog?.executor
