@@ -1,5 +1,6 @@
 import { DiscordBot } from "../../../../Modules/DiscordModule";
 import { DiscordMemberManager } from "../../../../Modules/DiscordModule/Utilities/DiscordMemberManager";
+import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/DiscordUtilities";
 import { DiscordConfig } from "../../../../Modules/DiscordModule/Vars/DiscordConfig";
 
 export default function listener(): void {
@@ -7,6 +8,8 @@ export default function listener(): void {
     "interactionCreate",
     async (interaction) => {
       if (!interaction.guildId) return;
+    if (!DiscordUtilities.getModeratedGuild(interaction.guild)) return;
+
       if (interaction.isStringSelectMenu()) {
         if (
           interaction.customId === "role_update" &&

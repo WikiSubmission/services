@@ -2,11 +2,14 @@ import { EmbedBuilder } from "discord.js";
 import { DiscordBot } from "../../../../Modules/DiscordModule";
 import { DiscordAlert } from "../../../../Modules/DiscordModule/Utilities/DiscordAlertManager";
 import { DiscordMemberManager } from "../../../../Modules/DiscordModule/Utilities/DiscordMemberManager";
+import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/DiscordUtilities";
 
 export default function listener(): void {
   DiscordBot.shared.addEventListener(
     "guildScheduledEventCreate",
     async (scheduledEvent) => {
+    if (!DiscordUtilities.getModeratedGuild(scheduledEvent.guild)) return;
+
       const resolvedMember = await DiscordMemberManager.get(
         scheduledEvent.creator,
         scheduledEvent.guild,

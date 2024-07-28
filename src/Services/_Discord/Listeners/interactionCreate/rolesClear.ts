@@ -1,11 +1,14 @@
 import { DiscordBot } from "../../../../Modules/DiscordModule";
 import { DiscordMemberManager } from "../../../../Modules/DiscordModule/Utilities/DiscordMemberManager";
+import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/DiscordUtilities";
 
 export default function listener(): void {
   DiscordBot.shared.addEventListener(
     "interactionCreate",
     async (interaction) => {
       if (!interaction.guildId) return;
+    if (!DiscordUtilities.getModeratedGuild(interaction.guild)) return;
+
       if (interaction.isButton()) {
         if (interaction.customId === "clear_roles") {
           const resolvedMember = await DiscordMemberManager.get(

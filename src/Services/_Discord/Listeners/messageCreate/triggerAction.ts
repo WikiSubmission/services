@@ -8,6 +8,12 @@ import { DiscordScheduledActions } from "../../../../Modules/DiscordModule/Utili
  */
 export default function listener(): void {
   DiscordBot.shared.addEventListener("messageCreate", async (message) => {
+    // Ignore unsupported guilds.
+    const moderatedGuild = DiscordConfig.knownGuilds.find(
+      (g) => g.id === message.guildId,
+    );
+    if (!moderatedGuild) return;
+
     if (!message.content.startsWith("!action")) return;
     if (
       message.member &&

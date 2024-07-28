@@ -15,6 +15,12 @@ export default function listener(): void {
   DiscordBot.shared.addEventListener("messageCreate", async (message) => {
     if (!message || !message.member) return;
 
+    // Ignore unsupported guilds.
+    const moderatedGuild = DiscordConfig.knownGuilds.find(
+      (g) => g.id === message.guildId,
+    );
+    if (!moderatedGuild) return;
+
     // Ignore bots.
     if (message.author.bot) return;
 
@@ -30,12 +36,6 @@ export default function listener(): void {
     ) {
       return;
     }
-
-    // Ignore unsupported guilds.
-    const moderatedGuild = DiscordConfig.knownGuilds.find(
-      (g) => g.id === message.guildId,
-    );
-    if (!moderatedGuild) return;
 
     // Ignore messages sent to an unmonitored channel.
     if (!moderatedGuild.antiRaidProtectedChannels.includes(message.channelId)) {
@@ -210,7 +210,7 @@ export default function listener(): void {
                 }
               });
             }
-          } catch (_) {}
+          } catch (_) { }
         });
 
         DiscordBot.shared.logEvent(

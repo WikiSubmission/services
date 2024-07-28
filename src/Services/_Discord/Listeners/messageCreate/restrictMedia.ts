@@ -14,6 +14,12 @@ export default function listener(): void {
   DiscordBot.shared.addEventListener("messageCreate", async (message) => {
     if (!message.member) return;
 
+    // Ignore unsupported guilds.
+    const moderatedGuild = DiscordConfig.knownGuilds.find(
+      (g) => g.id === message.guildId,
+    );
+    if (!moderatedGuild) return;
+
     // Ignore bots.
     if (message.author.bot) {
       return;
@@ -43,7 +49,7 @@ export default function listener(): void {
     if (
       resolvedAuthor.member.joinedTimestamp &&
       (Date.now() - resolvedAuthor.member.joinedTimestamp) / (1000 * 60 * 60) >
-        DiscordConfig.mediaRestrictionHours
+      DiscordConfig.mediaRestrictionHours
     ) {
       return;
     }

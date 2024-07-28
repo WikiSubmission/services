@@ -6,6 +6,8 @@ export default function listener(): void {
   DiscordBot.shared.addEventListener(
     "voiceStateUpdate",
     async (oldState, newState) => {
+    if (!DiscordUtilities.getModeratedGuild(oldState.guild)) return;
+
       const resolvedMember = await DiscordMemberManager.get(
         newState.member,
         newState.guild.id,

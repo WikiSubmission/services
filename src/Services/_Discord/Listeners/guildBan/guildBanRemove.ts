@@ -5,6 +5,9 @@ import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/Di
 
 export default function listener(): void {
   DiscordBot.shared.addEventListener("guildBanRemove", async (ban) => {
+
+    if (!DiscordUtilities.getModeratedGuild(ban.guild)) return;
+
     const auditLogs = await ban.guild.fetchAuditLogs({
       type: 23,
       limit: 5,
