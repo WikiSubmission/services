@@ -88,15 +88,19 @@ export class SystemUtilities {
 
   static async getAWSClient(): Promise<S3Client> {
     return await SystemUtilities.cachedFunction(`S3Client`, "30m", async () => {
-      const accessKeyId = await this.getEnvFromSupabase("AWS_ACCESS_KEY");
-      const secretAccessKey = await this.getEnvFromSupabase("AWS_SECRET_KEY");
-      const region = await this.getEnvFromSupabase("AWS_REGION");
+      const accessKeyId = await this.getEnvFromSupabase(
+        "DIGITALOCEAN_SPACES_ACCESS_KEY_ID",
+      );
+      const secretAccessKey = await this.getEnvFromSupabase(
+        "DIGITALOCEAN_SPACES_SECRET_ACCESS_KEY",
+      );
       return new S3Client({
+        endpoint: "https://sfo2.digitaloceanspaces.com",
+        region: "sfo2",
         credentials: {
           accessKeyId,
           secretAccessKey,
         },
-        region,
       });
     });
   }

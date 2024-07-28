@@ -16,7 +16,7 @@ export default async function service(): Promise<WikiService> {
         "tmp",
       ],
       port: Ports.LibraryAPI,
-      provider: "AWS_S3",
+      provider: "DIGITALOCEAN_SPACES",
     },
   });
 }

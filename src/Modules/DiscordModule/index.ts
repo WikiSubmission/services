@@ -5,6 +5,9 @@ import {
   GatewayIntentBits,
   REST,
   Routes,
+  DiscordAPIError,
+  CommandInteraction,
+  ButtonInteraction,
 } from "discord.js";
 import { WikiSlashCommand } from "./Types/WikiSlashCommand";
 import { SystemUtilities } from "../../Utilities/SystemUtils";
@@ -27,11 +30,10 @@ export class DiscordBot {
       GatewayIntentBits.GuildScheduledEvents,
       GatewayIntentBits.GuildVoiceStates,
       /** PRIVILEGED INTENTS: */
-      // GatewayIntentBits.GuildMembers,
-      // GatewayIntentBits.GuildMessages,
-      // GatewayIntentBits.GuildModeration,
-      // GatewayIntentBits.MessageContent,
-      // GatewayIntentBits.DirectMessages,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.GuildModeration,
+      GatewayIntentBits.MessageContent,
     ],
     presence: {
       status: "online",
@@ -66,26 +68,56 @@ export class DiscordBot {
   }
 
   /**
+   * @method login
+   * @description Initializes the Discord client with using the bot token.
+   */
+  async login(): Promise<void> {
+    const { token } = await this.getCredentials();
+    await this.client.login(token);
+    WikiEvents.emit(
+      "discord:launch",
+      `Initialized client. Username: "${this.client.user?.username}". Guilds: ${this.client.guilds.cache.size}.`,
+    );
+  }
+
+  /**
    * @method attachListeners
-   * @description Executes default exports in /Discord/Listener folder (which each should call the addEventListener() on the shared instance of this class)
+   * @description Executes default exports in /_Discord/Listener folder (which each should call the addEventListener() on the shared instance of this class)
    */
   async attachEventListeners() {
+    this.client.removeAllListeners();
     const listeners = await FileUtils.getDefaultExportsFromDirectory<
       () => void
-    >("/Discord/Listeners", true);
+    >("/_Discord/Listeners", true);
     if (listeners.length > 0) {
       for (const listenerFunction of listeners) {
         listenerFunction();
       }
-      WikiEvents.emit("discord:launch", `Attached listeners`);
+      WikiEvents.emit(
+        "discord:launch",
+        `Attached listeners (${listeners.length})`,
+      );
     } else {
       WikiEvents.emit("discord:launch", `No listeners to attach`);
     }
   }
 
   /**
+   * @method getSlashCommands
+   * @description
+   */
+  private async getSlashCommands(): Promise<WikiSlashCommand[]> {
+    const slashCommands =
+      await FileUtils.getDefaultExportsFromDirectory<WikiSlashCommand>(
+        "/_Discord/SlashCommands",
+      );
+
+    return slashCommands;
+  }
+
+  /**
    * @method syncCommands
-   * @description Registers extracted slash commands from the /Discord/SlashCommands folder
+   * @description Registers extracted slash commands from the /_Discord/SlashCommands folder
    */
   async syncCommands() {
     const slashCommands = await this.getSlashCommands();
@@ -102,7 +134,7 @@ export class DiscordBot {
         });
         WikiEvents.emit(
           "discord:launch",
-          `Synced global commands (${slashCommands.map((command) => `/${command.name}${command.options ? ` ${command.options.map((o) => `[${o.name}${o.optional ? "?" : ""}]`).join(" | ")}` : ""}`)})`,
+          `Synced GLOBAL commands (${slashCommands.length}) (${slashCommands.map((command) => `/${command.name}`).join(", ")})`,
         );
       } catch (error) {
         console.error(error);
@@ -128,7 +160,7 @@ export class DiscordBot {
           });
           WikiEvents.emit(
             "discord:launch",
-            `Synced guild commands for "${this.client.guilds.cache.find((i) => i.id === guildId)?.name || "--"}"`,
+            `Synced GUILD commands (${allocatedCommands.length}) for "${this.client.guilds.cache.find((i) => i.id === guildId)?.name || "--"}" (${allocatedCommands.map((i) => `/${i.name}`).join(", ")})`,
           );
         } catch (error) {
           WikiEvents.emit("discord:error", error);
@@ -141,35 +173,25 @@ export class DiscordBot {
 
   /**
    * @method scheduleActions
-   * @description Executes all default exports in the /Discord/ScheduledActions folder
+   * @description Executes all default exports in the /_Discord/ScheduledActions folder
    */
   async scheduleActions() {
     const scheduleActions = await FileUtils.getDefaultExportsFromDirectory<
       () => void
-    >("/Discord/ScheduledActions", true);
+    >("/_Discord/ScheduledActions", true);
 
     if (scheduleActions.length > 0) {
       for (const scheduleActionsFunction of scheduleActions) {
         scheduleActionsFunction();
       }
 
-      WikiEvents.emit("discord:launch", `Scheduled actions`);
+      WikiEvents.emit(
+        "discord:launch",
+        `Scheduled actions (${scheduleActions.length})`,
+      );
     } else {
       WikiEvents.emit("discord:launch", `No actions to schedule`);
     }
-  }
-
-  /**
-   * @method getSlashCommands
-   * @description
-   */
-  async getSlashCommands(): Promise<WikiSlashCommand[]> {
-    const slashCommands =
-      await FileUtils.getDefaultExportsFromDirectory<WikiSlashCommand>(
-        "/Discord/SlashCommands",
-      );
-
-    return slashCommands;
   }
 
   /**
@@ -186,6 +208,7 @@ export class DiscordBot {
         await listener(...args);
       } catch (error) {
         WikiEvents.emit("discord:error", error);
+        console.error(error);
       }
     };
 
@@ -289,16 +312,30 @@ export class DiscordBot {
     }
   }
 
-  /**
-   * @method login
-   * @description Initializes the Discord client with using the bot token.
-   */
-  async login(): Promise<void> {
-    const { token } = await this.getCredentials();
-    await this.client.login(token);
+  logInteraction(interaction: CommandInteraction | ButtonInteraction) {
+    const summary = DiscordUtilities.parseInteraction(interaction);
+    if (summary) {
+      WikiEvents.emit(
+        "discord:interactionCreate",
+        `[interactionCreate] ${summary}`,
+      );
+    }
+  }
+
+  logEvent(event: keyof ClientEvents, description: string) {
+    WikiEvents.emit("discord:event", `[${event}] ${description}`);
+  }
+
+  logError(error: DiscordAPIError | Error | any, sourceHint?: string) {
     WikiEvents.emit(
-      "discord:launch",
-      `Logged in as "${this.client.user?.username}"`,
+      "discord:error",
+      error instanceof DiscordAPIError
+        ? `[Error] ${error.name}: ${error.message} (${error.status})${sourceHint ? ` (${sourceHint})` : ""}`
+        : error instanceof Error
+          ? `[Internal Error] ${error.message}${sourceHint ? ` (${sourceHint})` : ""}`
+          : typeof error === "string"
+            ? `[Internal Error] ${error}${sourceHint ? ` (${sourceHint})` : ""}`
+            : `[Unknown Error] ${error?.message || "--"}${sourceHint ? ` (${sourceHint})` : ""}`,
     );
   }
 }

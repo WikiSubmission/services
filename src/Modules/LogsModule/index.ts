@@ -14,7 +14,10 @@ import { DiscordUtilities } from "../DiscordModule/Utilities/DiscordUtilities";
 type SystemEvents = "system:launch" | "system:error" | "system:critical-error";
 type ServiceEvents = "service:launch" | "service:error";
 type APIEvents = "api:launch" | "api:request" | "api:response" | "api:error";
-type DiscordEvents = "discord:launch" | `discord:${keyof ClientEvents}`;
+type DiscordEvents =
+  | "discord:launch"
+  | "discord:event"
+  | `discord:${keyof ClientEvents}`;
 type DatabaseEvents = "database:launch" | "database:error";
 
 type WikiEventTypes =

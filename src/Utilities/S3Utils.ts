@@ -90,6 +90,7 @@ export class S3Utils {
           Body: bodyStream,
           ContentLength: attachmentSize,
           ContentType: attachmentContentType,
+          ACL: "public-read", // Ensure the object is public
         }),
       );
 

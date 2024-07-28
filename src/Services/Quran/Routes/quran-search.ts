@@ -23,10 +23,8 @@ export default function route(): APIEndpoint {
           http_status_code: 400,
           results: [],
           error: {
-            fault: "client",
             name: "Bad Request",
             description: "Missing query parameter",
-            severity: "low",
           },
         });
 
@@ -149,6 +147,12 @@ export default function route(): APIEndpoint {
         return indexA - indexB;
       });
 
+      if (req.query.normalize_god_capitalization === "true") {
+        result.forEach((i) => {
+          i.verse_text_english = i.verse_text_english.replace(/GOD/g, "God");
+        });
+      }
+
       return new APIJSONResponse({
         success: result.length > 0,
         http_status_code: result.length > 0 ? 200 : 404,
@@ -158,8 +162,6 @@ export default function route(): APIEndpoint {
               error: {
                 name: "No Verses Found",
                 description: `Could not find any verse(s) with "${requestedQuery}"`,
-                fault: "client",
-                severity: "low",
               },
             }
           : {}),

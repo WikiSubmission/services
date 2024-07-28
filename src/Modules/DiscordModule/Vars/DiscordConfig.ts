@@ -25,7 +25,7 @@ export class DiscordConfig {
         quran: "1252787451097776200",
       },
       keyRoles: {
-        admin: "1080271291086´544936",
+        admin: "1080271291086544936",
         moderator: "1090377520626544671",
         developer: "1225605761242107904",
         member: "1093055741348286474",

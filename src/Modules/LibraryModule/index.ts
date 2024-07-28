@@ -15,7 +15,7 @@ import { WikiAPI } from "../APIModule";
  * @description A simple interface to define a 'library' service that expose media/files from a storage provider, using folder paths (e.g. /folder/subfolder/file.pdf) as endpoints
  */
 export interface LibraryConfig {
-  provider: "AWS_S3"; // TODO: add other file-storage providers to serve as a backup (gcloud, azure)
+  provider: "DIGITALOCEAN_SPACES"; // TODO: add other file-storage providers to serve as a backup (gcloud, azure)
   bucket: "wikisubmission" | string;
   keyFolders: string[];
   port: number;
@@ -52,7 +52,7 @@ export class WikiLibrary {
 
     // Go through each folder and create a corresponding endpoint.
     if (this.service.config.library) {
-      if (this.service.config.library.provider === "AWS_S3") {
+      if (this.service.config.library.provider === "DIGITALOCEAN_SPACES") {
         for (const folder of this.service.config.library.keyFolders) {
           endpoints.push({
             method: "get",

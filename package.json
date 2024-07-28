@@ -12,7 +12,7 @@
     "service:moc": "npm run build && node build/Entrypoint/index.js --service=moc",
     "service:library": "npm run build && node build/Entrypoint/index.js --service=library",
     "service:prayertimes": "npm run build && node build/Entrypoint/index.js --service=prayertimes",
-    "service:discord": "npm run build && node build/Entrypoint/index.js --service=discord --",
+    "service:discord": "npm run build && node build/Services/_Discord/service.js",
     "docker-build": "docker build -t wikisubmission-services .",
     "docker": "docker stop wikisubmission-services-container || true && docker rm wikisubmission-services-container || true && npm run docker-build && docker run -p 80:80 --name wikisubmission-services-container wikisubmission-services",
     "format": "npx prettier . --write",

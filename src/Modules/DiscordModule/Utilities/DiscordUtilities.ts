@@ -16,8 +16,28 @@ import { DiscordBot } from "..";
 import { WikiEvents } from "../../LogsModule";
 import { WikiSlashCommand } from "../Types/WikiSlashCommand";
 import { OriginalSlashCommand } from "../Types/OriginalSlashCommand";
+import { SerializedInteraction } from "../Types/SerializedInteraction";
 
 export class DiscordUtilities {
+  static serializedInteraction(interaction: any): SerializedInteraction {
+    return {
+      type: interaction.type,
+      id: interaction.id,
+      channelId: interaction.channelId,
+      guildId: interaction.guildId,
+      user: interaction.user.id,
+      locale: interaction.locale,
+      commandId: interaction.commandId,
+      commandName: interaction.commandName,
+      commandType: interaction.commandType,
+      commandGuildId: interaction.commandGuildId,
+      deferred: interaction.deferred,
+      replied: interaction.replied,
+      ephemeral: interaction.ephemeral,
+      options: interaction.options.data,
+    };
+  }
+
   static getModeratedGuild(
     guild: DiscordModeratedGuild | Guild | string | null,
   ): DiscordModeratedGuild | null {
@@ -45,7 +65,7 @@ export class DiscordUtilities {
       );
 
       const member =
-        guildData?.members.cache.get(user.id) ||
+        guildData?.members.cache?.get(user.id) ||
         (await guildData?.members.fetch(user));
 
       return member ? member : null;
@@ -83,7 +103,7 @@ export class DiscordUtilities {
 
     try {
       const guild = await DiscordBot.shared.client.guilds.fetch(guildId);
-      const channel = guild.channels.cache.get(channelId);
+      const channel = guild.channels.cache?.get(channelId);
 
       if (channel && channel.type === 0) {
         return channel as T;

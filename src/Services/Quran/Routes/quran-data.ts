@@ -21,7 +21,17 @@ export default function route(): APIEndpoint {
         type: "application/json",
         size,
         body: data,
-        forceDownload: true
+        forceDownload: true,
+        ...(data.length === 0
+          ? {
+              error: {
+                name: "Internal Server Error",
+                description: `Please try again later`,
+                severity: "high",
+                fault: "server",
+              },
+            }
+          : {}),
       });
     },
   };

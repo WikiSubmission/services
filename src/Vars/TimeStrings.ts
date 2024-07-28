@@ -2,6 +2,7 @@ export type TimeStrings =
   | "3s"
   | "5s"
   | "10s"
+  | "15s"
   | "30s"
   | "45s"
   | "1m"

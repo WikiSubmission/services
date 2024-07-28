@@ -38,8 +38,6 @@ export default function route(): APIEndpoint {
                 error: {
                   name: "Chapter Not Found",
                   description: `Chapter must be a number between 1 - 114.`,
-                  fault: "client",
-                  severity: "low",
                 },
               }
             : {}),
@@ -65,6 +63,15 @@ export default function route(): APIEndpoint {
             );
           });
 
+          if (req.query.normalize_god_capitalization === "true") {
+            result.forEach((i) => {
+              i.verse_text_english = i.verse_text_english.replace(
+                /GOD/g,
+                "God",
+              );
+            });
+          }
+
           return new APIJSONResponse({
             success: result.length > 0,
             http_status_code: result.length > 0 ? 200 : 404,
@@ -78,32 +85,25 @@ export default function route(): APIEndpoint {
                   error: {
                     name: "Verse Not Found",
                     description: `Verse "${requestedVerse.chapter}:${requestedVerse.verse}" not found`,
-                    fault: "client",
-                    severity: "low",
                   },
                 }
               : {}),
           });
         }
-      }
-
-      // verses separated by comma?
-      else if (req.params?.query1?.includes(",")) {
-        const possibleVersesRequested = req.params?.query1
-          ?.split(",")
-          .map((v) => v.trim()); // trim spaces
+      } else if (req.params?.query1?.includes(",")) {
+        const possibleVersesRequested = req.params.query1
+          .split(",")
+          .map((v) => v.trim());
         const versesMatched: string[] = [];
-        let data: DataQuranItem[] = [];
+        const _data: DataQuranItem[] = [];
 
         for (const v of possibleVersesRequested) {
-          // split by ":" to check for ranges
           const parts = v.split(":");
           if (parts.length === 2) {
             const startVerse = parts[0].trim();
             const endVerse = parts[1].trim();
 
             if (startVerse && endVerse) {
-              // check for a range, e.g., "2-3"
               const rangeMatch = endVerse.match(/(\d+)-(\d+)/);
               if (rangeMatch) {
                 const rangeStart = parseInt(rangeMatch[1]);
@@ -112,20 +112,21 @@ export default function route(): APIEndpoint {
                 if (!isNaN(rangeStart) && !isNaN(rangeEnd)) {
                   for (let i = rangeStart; i <= rangeEnd; i++) {
                     const verseId = `${startVerse}:${i}`;
-                    let matchingVerse = data.find(
+                    const matchingVerse = data.find(
                       (e) => e.verse_id === verseId,
                     );
                     if (matchingVerse) {
-                      data.push(matchingVerse);
+                      _data.push(matchingVerse);
                       versesMatched.push(matchingVerse.verse_id);
                     }
                   }
                 }
               } else {
                 // single verse
-                let matchingVerse = data.find((e) => e.verse_id === v);
+                const verseId = `${startVerse}:${endVerse}`;
+                const matchingVerse = data.find((e) => e.verse_id === verseId);
                 if (matchingVerse) {
-                  data.push(matchingVerse);
+                  _data.push(matchingVerse);
                   versesMatched.push(matchingVerse.verse_id);
                 }
               }
@@ -133,17 +134,21 @@ export default function route(): APIEndpoint {
           }
         }
 
+        if (req.query.normalize_god_capitalization === "true") {
+          _data.forEach((i) => {
+            i.verse_text_english = i.verse_text_english.replace(/GOD/g, "God");
+          });
+        }
+
         return new APIJSONResponse({
           success: data.length > 0,
           http_status_code: data.length > 0 ? 200 : 404,
-          results: data,
+          results: _data,
           ...(data.length === 0
             ? {
                 error: {
                   name: "Verse(s) Not Found",
                   description: `Make sure the request query is in the correct format`,
-                  fault: "client",
-                  severity: "low",
                 },
               }
             : {}),
@@ -157,8 +162,12 @@ export default function route(): APIEndpoint {
         error: {
           fault: "client",
           name: "Bad Request",
-          description: "Couldn't find the verse(s)",
-          severity: "low",
+          description:
+            req.params.query1 && !req.params.query2
+              ? `Verse/(s) "${req.params.query1}" not found`
+              : req.params.query1 && req.params.query2
+                ? `Verse/(s) "${req.params.query1}:${req.params.query2}" not found`
+                : `Couldn't find the verse(s)`,
         },
       });
     },

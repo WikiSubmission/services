@@ -26,6 +26,16 @@ export default function route(): APIEndpoint {
         success: result.length > 0,
         http_status_code: result.length > 0 ? 200 : 400,
         results: result,
+        ...(result.length === 0
+          ? {
+              error: {
+                name: "Internal Server Error",
+                description: `Please try again later`,
+                severity: "high",
+                fault: "server",
+              },
+            }
+          : {}),
       });
     },
   };

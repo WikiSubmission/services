@@ -53,4 +53,12 @@ export class WikiCache {
     const store = await this.getStore(service);
     return await store.set(key, data, SystemUtilities.timeToMs(ttl));
   }
+
+  static async delete(
+    service: WikiService | "PublicCache",
+    key: string,
+  ): Promise<void> {
+    const store = await this.getStore(service);
+    await store.del(key);
+  }
 }

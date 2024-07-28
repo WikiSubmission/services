@@ -98,6 +98,10 @@ export class FileUtils {
           continue;
         }
 
+        if (file.startsWith("_") && !directoryInServicesFolder.includes("_")) {
+          continue;
+        }
+
         const stats = fs.statSync(filePath);
 
         if (stats.isDirectory()) {

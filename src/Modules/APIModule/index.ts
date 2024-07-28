@@ -194,7 +194,7 @@ export class WikiAPI {
             endpoint.caching.duration,
           );
         }
-        // If it's a file, we'll use the file system as file sizes can be heavy.
+        // If it's a file.
         if (result instanceof APIFileResponse) {
           // TODO
         }
