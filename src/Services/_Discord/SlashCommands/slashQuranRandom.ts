@@ -37,7 +37,7 @@ export default function command(): WikiSlashCommand {
     handler: async (interaction) => {
       const result = await NetworkUtilities.GET_INTERNAL<DataQuranItem[]>(
         `https://api.wikisubmission.org`,
-        "/quran/random-verse",
+        "/quran/random-verse?normalize_god_capitalization=true",
       );
 
       if (result && result.results) {
