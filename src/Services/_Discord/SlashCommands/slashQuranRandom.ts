@@ -36,11 +36,8 @@ export default function command(): WikiSlashCommand {
     ],
     handler: async (interaction) => {
       const result = await NetworkUtilities.GET_INTERNAL<DataQuranItem[]>(
-        `http://localhost:${Ports.QuranAPI}`,
+        `https://https://api.wikisubmission.org`,
         "/quran/random-verse",
-        {
-          backupEndpoint: "https://api.wikisubmission.org",
-        },
       );
 
       if (result && result.results) {
