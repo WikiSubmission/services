@@ -102,9 +102,11 @@ class WikiSubmissionEvents {
   private discordLogs() {
     events.on("discord:event", (data?: string) => {
       if (data) {
-        console.log(`[${new Date().toISOString().split("T")[1]}] [DISCORD] [EVENT] ${data}`);
+        console.log(
+          `[${new Date().toISOString().split("T")[1]}] [DISCORD] [EVENT] ${data}`,
+        );
       }
-    })
+    });
     events.on(
       "discord:interactionCreate",
       (data?: CommandInteraction | ButtonInteraction) => {

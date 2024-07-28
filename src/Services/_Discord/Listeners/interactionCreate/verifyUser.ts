@@ -59,17 +59,17 @@ export default function listener(): void {
               });
               await new DiscordAlert(interaction.guildId).send("ANTI-RAID", {
                 embeds: [
-                    new EmbedBuilder()
+                  new EmbedBuilder()
                     .setAuthor({
-                        name: `${resolvedMember.member?.user.username} is now verified`,
-                        iconURL: resolvedMember.member?.displayAvatarURL()
+                      name: `${resolvedMember.member?.user.username} is now verified`,
+                      iconURL: resolvedMember.member?.displayAvatarURL(),
                     })
                     .setFooter({
-                        text: interaction.user.username,
-                        iconURL: interaction.user.displayAvatarURL()
+                      text: interaction.user.username,
+                      iconURL: interaction.user.displayAvatarURL(),
                     })
-                    .setColor("DarkGreen")
-                ]
+                    .setColor("DarkGreen"),
+                ],
               });
               return;
             case "ALREADY_HAS_ROLE":

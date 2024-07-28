@@ -48,7 +48,7 @@ export default function listener(): void {
 
       DiscordBot.shared.logEvent(
         "guildScheduledEventCreate",
-        `Event "${scheduledEvent.name}" created in "${scheduledEvent.guild?.name || '–'}"`,
+        `Event "${scheduledEvent.name}" created in "${scheduledEvent.guild?.name || "–"}"`,
       );
     },
   );
