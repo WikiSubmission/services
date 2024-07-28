@@ -62,7 +62,7 @@ export default function command(): WikiSlashCommand {
               )
               .setFooter({
                 text: isTurkish
-                  ? "Kuran: Son Ahit • Turkish • "
+                  ? "Kuran: Son Ahit • Turkish"
                   : "Quran: The Final Testament • Random Verse",
               })
               .setColor("DarkButNotBlack"),
