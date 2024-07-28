@@ -27,10 +27,7 @@ export default function route(): APIEndpoint {
 
         if (req.query.normalize_god_capitalization === "true") {
           result.forEach((i) => {
-            i.verse_text_english = i.verse_text_english.replace(
-              /GOD/g,
-              "God",
-            );
+            i.verse_text_english = i.verse_text_english.replace(/GOD/g, "God");
           });
         }
 
