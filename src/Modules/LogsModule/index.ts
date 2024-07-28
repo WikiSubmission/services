@@ -100,7 +100,7 @@ class WikiSubmissionEvents {
   }
 
   private discordLogs() {
-    ["launch", "guildMemberAdd", "guildMemberRemove", "guildBanAdd", "guildBanRemove"].forEach((event) => {
+    ["launch", "guildMemberAdd", "guildMemberRemove", "guildBanAdd", "guildBanRemove", "messageCreate"].forEach((event) => {
       this.stringEvents(`discord:${event}`);
     });
     events.on(
