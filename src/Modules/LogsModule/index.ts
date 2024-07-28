@@ -101,6 +101,14 @@ class WikiSubmissionEvents {
   }
 
   private discordLogs() {
+    events.on("discord:launch", (data?: string) => {
+      if (data) {
+        console.log(
+          `[${new Date().toISOString().split("T")[1]}] [DISCORD] [LAUNCH] ${data}`,
+        );
+      }
+    });
+
     events.on("discord:event", (data?: string) => {
       if (data) {
         console.log(
