@@ -19,7 +19,7 @@ export default function listener(): void {
             name: `${ban.user.username} was banned`,
             iconURL: ban.user.displayAvatarURL(),
           })
-          .setDescription(ban.reason || banLog?.reason || "")
+          .setDescription(ban.reason || banLog?.reason || null)
           .addFields(
             {
               name: "User",
