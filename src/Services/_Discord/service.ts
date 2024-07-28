@@ -1,5 +1,6 @@
 import { loadEnvironment } from "../../Entrypoint/loadEnvironment";
 import { preLaunch } from "../../Entrypoint/preLaunch";
+import { APIJSONResponse } from "../../Modules/APIModule/Types/APIResponse";
 import { DiscordBot } from "../../Modules/DiscordModule";
 import { WikiService } from "../../Modules/ServiceModule";
 
@@ -27,10 +28,10 @@ import { WikiService } from "../../Modules/ServiceModule";
           method: "get",
           alternateRoutes: ["/health"],
           handler: async () => {
-            return {
+            return new APIJSONResponse({
               success: true,
               http_status_code: 200,
-            }
+            });
           }
         }
       ]
