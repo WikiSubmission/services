@@ -253,6 +253,7 @@ export class DiscordConfig {
             "Hausa",
             "Hindi",
             "Ukranian",
+            "Bosnian"
           ],
         },
         {
