@@ -32,9 +32,9 @@ import { WikiService } from "../../Modules/ServiceModule";
               success: true,
               http_status_code: 200,
             });
-          }
-        }
-      ]
-    }
+          },
+        },
+      ],
+    },
   });
 })();

@@ -20,11 +20,17 @@ export default function listener(): void {
                 new EmbedBuilder()
                   .setTitle("View Roles")
                   .addFields(
-                    { name: `User`, value: resolvedMember.completeUserString() },
-                    { name: `Roles`, value: resolvedMember.roleListDiscordFormat() }
+                    {
+                      name: `User`,
+                      value: resolvedMember.completeUserString(),
+                    },
+                    {
+                      name: `Roles`,
+                      value: resolvedMember.roleListDiscordFormat(),
+                    },
                   )
                   .setThumbnail(resolvedMember.member.displayAvatarURL())
-                  .setColor("DarkButNotBlack")
+                  .setColor("DarkButNotBlack"),
               ],
               ephemeral: true,
             });

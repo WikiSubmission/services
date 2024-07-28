@@ -35,7 +35,7 @@ export default function listener(): void {
                 .setFooter({
                   text:
                     scheduledEvent.creatorId ===
-                      DiscordBot.shared.client.user?.id
+                    DiscordBot.shared.client.user?.id
                       ? `/event`
                       : "",
                 })

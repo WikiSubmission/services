@@ -65,9 +65,9 @@ export default function listener(): void {
                     value:
                       memberRecord.data.roles.length > 0
                         ? memberRecord.data.roles
-                          .split(",")
-                          .map((r) => `<@&${r}>`)
-                          .join(", ")
+                            .split(",")
+                            .map((r) => `<@&${r}>`)
+                            .join(", ")
                         : "Unavailable",
                   },
                 )

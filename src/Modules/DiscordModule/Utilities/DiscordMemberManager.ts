@@ -77,7 +77,7 @@ export class DiscordMemberManager {
 
   accountCreatedRelativeTimeString(): string {
     return DateUtilities.distanceFromNow(
-      this.member?.user.createdTimestamp || 'recently',
+      this.member?.user.createdTimestamp || "recently",
     );
   }
 
