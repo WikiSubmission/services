@@ -1,4 +1,4 @@
-import { Colors, EmbedBuilder, VoiceChannel } from "discord.js";
+import { EmbedBuilder, VoiceChannel } from "discord.js";
 import { DiscordBot } from "../../../../Modules/DiscordModule";
 import { DiscordMemberManager } from "../../../../Modules/DiscordModule/Utilities/DiscordMemberManager";
 import { DiscordAlert } from "../../../../Modules/DiscordModule/Utilities/DiscordAlertManager";
@@ -48,7 +48,7 @@ export default function listener(): void {
             )
             .setFooter({ text: `Member count: ${member.guild.memberCount}` })
             .setThumbnail(resolvedMember.member.displayAvatarURL())
-            .setColor(Colors.DarkRed)
+            .setColor("DarkRed")
             .setTimestamp(Date.now()),
         ],
       });
