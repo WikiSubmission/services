@@ -8,8 +8,6 @@ export default function listener(): void {
   DiscordBot.shared.addEventListener("messageCreate", async (message) => {
     if (message.author.bot) return;
 
-    if (!DiscordUtilities.getModeratedGuild(message.guild)) return;
-
     const moderatedGuild = DiscordUtilities.getModeratedGuild(message.guildId);
 
     if (!moderatedGuild) return;
