@@ -10,7 +10,7 @@ export class DateUtilities {
 
     const distance = formatDistance(target, now, { addSuffix: true });
 
-    return distance;
+    return distance || "--";
   }
 
   static getSpecificDate(
