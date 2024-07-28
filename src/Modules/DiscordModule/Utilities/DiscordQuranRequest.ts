@@ -162,9 +162,6 @@ export class DiscordQuranRequest extends DiscordRequest {
 
         if (this.interaction.commandName !== "aquran") {
           description += this.descriptionTextComponent(i);
-          if (this.interaction.guildId === "911268076933230662") {
-            description.replace(/GOD/g, "God");
-          }
         }
 
         if (
