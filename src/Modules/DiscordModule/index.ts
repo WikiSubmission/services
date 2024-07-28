@@ -81,10 +81,6 @@ export class DiscordBot {
       "discord:launch",
       `Initialized client. Username: "${this.client.user?.username}". Guilds: ${this.client.guilds.cache.size}.`,
     );
-    await new DiscordAlert("1080271049377202177").send("DEV-SYSTEMLOG", {
-      content: `\`\`\`Online.\`\`\``,
-      flags: ["SuppressNotifications"],
-    });
   }
 
   /**
@@ -175,7 +171,7 @@ export class DiscordBot {
         } catch (error) {
           WikiEvents.emit(
             "discord:launch",
-            `No access to GUILD ${guildId} - skipping.`,
+            `No access to GUILD ${guildId} - skipping`,
           );
         }
       }
