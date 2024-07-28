@@ -23,7 +23,7 @@ import { WikiService } from "../../Modules/ServiceModule";
       port: 8080,
       endpoints: [
         {
-          route: "/",
+          route: "*",
           method: "get",
           alternateRoutes: ["/health"],
           handler: async () => {
