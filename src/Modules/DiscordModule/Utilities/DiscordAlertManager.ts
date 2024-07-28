@@ -12,7 +12,6 @@ type AlertDestination =
   | "JAIL-LOG"
   | "JAIL-CHAT"
   | "CHOOSE-ROLES"
-  | "DEV-SYSTEMLOG"
   | "DEV-EVENTLOG"
   | "DEV-ERRORLOG";
 
@@ -68,8 +67,6 @@ export class DiscordAlert {
         return this.moderatedGuild.jail?.jailLogChannelId || null;
       case "JAIL-CHAT":
         return this.moderatedGuild.jail?.jailChannelId || null;
-      case "DEV-SYSTEMLOG":
-        return "1252774885231562762";
       case "DEV-EVENTLOG":
         return "1252774367381950494";
       case "DEV-ERRORLOG":
