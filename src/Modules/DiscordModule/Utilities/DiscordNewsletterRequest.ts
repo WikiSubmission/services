@@ -113,7 +113,7 @@ export class DiscordNewsletterRequest extends DiscordRequest {
       };
     } else {
       throw new Error(
-        `${request?.error?.description || "Internal Server Error"}`,
+        `${request?.error?.description || `No newsletter instances found with "${query}"`}`,
       );
     }
   }

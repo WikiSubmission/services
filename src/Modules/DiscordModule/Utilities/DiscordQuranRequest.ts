@@ -113,7 +113,7 @@ export class DiscordQuranRequest extends DiscordRequest {
       };
     } else {
       throw new Error(
-        `${request?.error?.description || "Internal Server Error"}`,
+        `${request?.error?.description || `No verse/(s) found with "${query}"`}`,
       );
     }
   }

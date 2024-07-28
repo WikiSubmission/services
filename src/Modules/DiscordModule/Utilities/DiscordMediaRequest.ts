@@ -111,7 +111,7 @@ export class DiscordMediaRequest extends DiscordRequest {
       };
     } else {
       throw new Error(
-        `${request?.error?.description || "Internal Server Error"}`,
+        `${request?.error?.description || `No media instance(s) found with "${query}"`}`,
       );
     }
   }
