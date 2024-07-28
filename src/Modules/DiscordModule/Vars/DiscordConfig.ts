@@ -104,7 +104,7 @@ export class DiscordConfig {
         antiRaid: "1093108437589692486",
         memberCount: "935904300964651008",
         welcomeChannel: "1184176347157889074",
-        chooseRoles: "1252819978265034762",
+        chooseRoles: "935279135012565052",
         quran: "911278762023325696",
       },
       keyRoles: {
