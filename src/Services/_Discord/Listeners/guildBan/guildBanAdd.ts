@@ -41,5 +41,10 @@ export default function listener(): void {
           .setColor("DarkRed"),
       ],
     });
+
+    DiscordBot.shared.logEvent(
+      "guildBanAdd",
+      `User "${ban.user.username}" was banned from "${ban.guild.name}"`,
+    );
   });
 }

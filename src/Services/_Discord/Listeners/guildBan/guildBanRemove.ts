@@ -49,5 +49,10 @@ export default function listener(): void {
           .setColor("DarkGreen"),
       ],
     });
+
+    DiscordBot.shared.logEvent(
+      "guildBanRemove",
+      `User "${ban.user.username}" was unbanned from "${ban.guild.name}"`,
+    );
   });
 }
