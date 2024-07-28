@@ -35,6 +35,7 @@ export class DiscordBot {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildModeration,
       GatewayIntentBits.MessageContent,
+      GatewayIntentBits.DirectMessages
     ],
     presence: {
       status: "online",
