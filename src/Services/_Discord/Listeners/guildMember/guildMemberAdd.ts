@@ -9,7 +9,6 @@ import { SystemUtilities } from "../../../../Utilities/SystemUtils";
 
 export default function listener(): void {
   DiscordBot.shared.addEventListener("guildMemberAdd", async (member) => {
-
     if (!DiscordUtilities.getModeratedGuild(member.guild)) return;
 
     const resolvedMember = await DiscordMemberManager.get(member, member.guild);

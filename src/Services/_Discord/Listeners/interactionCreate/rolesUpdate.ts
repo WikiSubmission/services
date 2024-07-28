@@ -8,7 +8,7 @@ export default function listener(): void {
     "interactionCreate",
     async (interaction) => {
       if (!interaction.guildId) return;
-    if (!DiscordUtilities.getModeratedGuild(interaction.guild)) return;
+      if (!DiscordUtilities.getModeratedGuild(interaction.guild)) return;
 
       if (interaction.isStringSelectMenu()) {
         if (

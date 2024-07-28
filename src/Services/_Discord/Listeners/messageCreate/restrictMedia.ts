@@ -49,7 +49,7 @@ export default function listener(): void {
     if (
       resolvedAuthor.member.joinedTimestamp &&
       (Date.now() - resolvedAuthor.member.joinedTimestamp) / (1000 * 60 * 60) >
-      DiscordConfig.mediaRestrictionHours
+        DiscordConfig.mediaRestrictionHours
     ) {
       return;
     }

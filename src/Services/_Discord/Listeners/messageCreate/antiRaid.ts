@@ -210,7 +210,7 @@ export default function listener(): void {
                 }
               });
             }
-          } catch (_) { }
+          } catch (_) {}
         });
 
         DiscordBot.shared.logEvent(

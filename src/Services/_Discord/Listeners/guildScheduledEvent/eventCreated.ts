@@ -8,7 +8,7 @@ export default function listener(): void {
   DiscordBot.shared.addEventListener(
     "guildScheduledEventCreate",
     async (scheduledEvent) => {
-    if (!DiscordUtilities.getModeratedGuild(scheduledEvent.guild)) return;
+      if (!DiscordUtilities.getModeratedGuild(scheduledEvent.guild)) return;
 
       const resolvedMember = await DiscordMemberManager.get(
         scheduledEvent.creator,

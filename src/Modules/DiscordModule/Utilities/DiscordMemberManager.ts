@@ -163,11 +163,11 @@ export class DiscordMemberManager {
                 },
                 ...(rolesRemoved.length || 0 > 0
                   ? [
-                    {
-                      name: "Replaced",
-                      value: `– ${rolesRemoved.map((role) => `<@&${DiscordBot.shared.client.guilds.cache.find((g) => g.id === this.moderatedGuild?.id)?.roles.cache.find((r) => r.name === role || r.id === role)?.id}>`).join(" ")}`,
-                    },
-                  ]
+                      {
+                        name: "Replaced",
+                        value: `– ${rolesRemoved.map((role) => `<@&${DiscordBot.shared.client.guilds.cache.find((g) => g.id === this.moderatedGuild?.id)?.roles.cache.find((r) => r.name === role || r.id === role)?.id}>`).join(" ")}`,
+                      },
+                    ]
                   : []),
               )
               .setColor("DarkNavy")

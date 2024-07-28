@@ -6,7 +6,7 @@ export default function listener(): void {
   DiscordBot.shared.addEventListener(
     "interactionCreate",
     async (interaction) => {
-    if (!DiscordUtilities.getModeratedGuild(interaction.guild)) return;
+      if (!DiscordUtilities.getModeratedGuild(interaction.guild)) return;
 
       if (interaction.isButton()) {
         if (interaction.customId.startsWith("ban")) {
