@@ -25,6 +25,15 @@ export default function route(): APIEndpoint {
           (ch) => ch.chapter_number === requestedChapter,
         );
 
+        if (req.query.normalize_god_capitalization === "true") {
+          result.forEach((i) => {
+            i.verse_text_english = i.verse_text_english.replace(
+              /GOD/g,
+              "God",
+            );
+          });
+        }
+
         return new APIJSONResponse({
           success: result.length > 0,
           http_status_code: result.length > 0 ? 200 : 404,
