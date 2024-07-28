@@ -52,7 +52,7 @@ export default function command(): WikiSlashCommand {
       } else {
         const resolvedSuspect = await DiscordMemberManager.get(
           suspect,
-          interaction.guildId,
+          interaction.guild,
         );
         if (resolvedSuspect) {
           const result = await resolvedSuspect.jail(
