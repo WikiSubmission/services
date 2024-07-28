@@ -9,7 +9,7 @@ import { SystemUtilities } from "../../../../Utilities/SystemUtils";
 
 export default function listener(): void {
   DiscordBot.shared.addEventListener("guildMemberRemove", async (member) => {
-    const resolvedMember = await DiscordMemberManager.get(member, member.guild);
+    const resolvedMember = await DiscordMemberManager.get(member, member.guild.id);
     const supabaseClient = await SystemUtilities.getSupabaseClient();
 
     if (
@@ -32,10 +32,12 @@ export default function listener(): void {
               { name: "User", value: resolvedMember.completeUserString() },
               {
                 name: "Roles",
-                value: member.roles.cache
-                  .filter((i) => i.name !== "@everyone")
-                  .map((i) => `<@&${i.id}>`)
-                  .join(", "),
+                value: member.roles.cache.size > 0 ?
+                  member.roles.cache
+                    .filter((i) => i.name !== "@everyone")
+                    .map((i) => `<@&${i.id}>`)
+                    .join(", ")
+                  : "None",
               },
               {
                 name: "Joined Server",
