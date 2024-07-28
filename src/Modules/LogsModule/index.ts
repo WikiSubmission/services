@@ -52,7 +52,7 @@ class WikiSubmissionEvents {
 
   private systemLogs() {
     ["launch", "error"].forEach((event) => {
-      this.stringEvents(`service:${event}`);
+      this.stringEvents(`system:${event}`);
     });
 
     events.on("system:critical-error", (data?: string) => {
