@@ -157,10 +157,12 @@ export default function listener(): void {
                   },
                   {
                     name: "Roles",
-                    value: member.roles.cache
+                    value: member.roles.cache.size > 0 ?
+                    member.roles.cache
                       .filter((i) => i.name !== "@everyone")
                       .map((i) => `<@&${i.id}>`)
-                      .join(", "),
+                      .join(", ")
+                    : "None",
                   },
                 )
                 .setThumbnail(resolvedMember.member.displayAvatarURL())
