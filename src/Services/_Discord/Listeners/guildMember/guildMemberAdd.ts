@@ -75,7 +75,7 @@ export default function listener(): void {
                   text: `Member count: ${member.guild.memberCount}`,
                 })
                 .setThumbnail(resolvedMember.member.displayAvatarURL())
-                .setColor(Colors.DarkOrange)
+                .setColor("DarkOrange")
                 .setTimestamp(Date.now()),
             ],
           },
