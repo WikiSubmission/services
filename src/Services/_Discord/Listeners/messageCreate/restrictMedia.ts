@@ -49,7 +49,7 @@ export default function listener(): void {
     if (
       resolvedAuthor.member.joinedTimestamp &&
       (Date.now() - resolvedAuthor.member.joinedTimestamp) / (1000 * 60 * 60) >
-        DiscordConfig.mediaRestrictionHours
+      DiscordConfig.mediaRestrictionHours
     ) {
       return;
     }
@@ -87,6 +87,9 @@ export default function listener(): void {
                 value: DiscordUtilities.completeUserString(message.author),
               },
               { name: "Content", value: `\`\`\`${message.content}\`\`\`` },
+              {
+                name: "Channel", value: `<#${message.channel.id}>`
+              },
               {
                 name: "Block Reason",
                 value: `New user (<${DiscordConfig.mediaRestrictionHours} hours since joined)`,
@@ -149,6 +152,10 @@ export default function listener(): void {
                 {
                   name: "Attachment",
                   value: `${attachment.name} | [URL](https://docs.wikisubmission.org/library/tmp/${message.author.id}-${attachment.name})`,
+                },
+                {
+                  name: "Channel",
+                  value: `<#${message.channel.id}>`
                 },
                 {
                   name: "Block Reason",
