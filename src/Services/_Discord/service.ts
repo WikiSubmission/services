@@ -20,7 +20,7 @@ import { WikiService } from "../../Modules/ServiceModule";
     api: {
       name: "DiscordAPI",
       description: "Server instance",
-      port: 80,
+      port: 8080,
       endpoints: [
         {
           route: "/",
