@@ -1,4 +1,6 @@
+import { EmbedBuilder } from "discord.js";
 import { DiscordBot } from "../../../../Modules/DiscordModule";
+import { DiscordAlert } from "../../../../Modules/DiscordModule/Utilities/DiscordAlertManager";
 import { DiscordMemberManager } from "../../../../Modules/DiscordModule/Utilities/DiscordMemberManager";
 import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/DiscordUtilities";
 import { DiscordConfig } from "../../../../Modules/DiscordModule/Vars/DiscordConfig";
@@ -54,6 +56,20 @@ export default function listener(): void {
             case "ADDED":
               await interaction.editReply({
                 content: `\`User is now verified\``,
+              });
+              await new DiscordAlert(interaction.guildId).send("ANTI-RAID", {
+                embeds: [
+                    new EmbedBuilder()
+                    .setAuthor({
+                        name: `${resolvedMember.member?.user.username} is now verified`,
+                        iconURL: resolvedMember.member?.displayAvatarURL()
+                    })
+                    .setFooter({
+                        text: interaction.user.username,
+                        iconURL: interaction.user.displayAvatarURL()
+                    })
+                    .setColor("DarkGreen")
+                ]
               });
               return;
             case "ALREADY_HAS_ROLE":
