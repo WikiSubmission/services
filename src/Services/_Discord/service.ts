@@ -17,23 +17,5 @@ import { WikiService } from "../../Modules/ServiceModule";
     customService: async () => {
       await DiscordBot.shared.start();
     },
-    api: {
-      name: "DiscordAPI",
-      description: "Server instance",
-      port: 8080,
-      endpoints: [
-        {
-          route: "/",
-          method: "get",
-          alternateRoutes: ["/health"],
-          handler: async () => {
-            return {
-              success: true,
-              http_status_code: 200,
-            }
-          }
-        }
-      ]
-    }
   });
 })();
