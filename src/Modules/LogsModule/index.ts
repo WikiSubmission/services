@@ -10,6 +10,7 @@ import {
   APIResponseEvent,
 } from "../APIModule/Types/APIEmittedEvents";
 import { DiscordUtilities } from "../DiscordModule/Utilities/DiscordUtilities";
+import { DiscordAlert } from "../DiscordModule/Utilities/DiscordAlertManager";
 
 type SystemEvents = "system:launch" | "system:error" | "system:critical-error";
 type ServiceEvents = "service:launch" | "service:error";
