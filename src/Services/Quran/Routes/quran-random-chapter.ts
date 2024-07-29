@@ -24,7 +24,7 @@ export default function route(): APIEndpoint {
 
       return new APIJSONResponse({
         success: result.length > 0,
-        http_status_code: result.length > 0 ? 200 : 400,
+        http_status_code: result.length > 0 ? 200 : 204,
         results: result,
         ...(result.length === 0
           ? {
