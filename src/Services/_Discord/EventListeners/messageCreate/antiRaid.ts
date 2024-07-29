@@ -3,8 +3,8 @@ import { DiscordAntiRaidProfile } from "../../../../Modules/DiscordModule/Types/
 import { DiscordAlert } from "../../../../Modules/DiscordModule/Utilities/DiscordAlertManager";
 import { DiscordMemberManager } from "../../../../Modules/DiscordModule/Utilities/DiscordMemberManager";
 import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/DiscordUtilities";
-import { DiscordConfig } from "../../../../Modules/DiscordModule/Vars/DiscordConfig";
-import { DateUtilities } from "../../../../Utilities/DateUtils";
+import { DiscordConfig } from "../../../../Modules/DiscordModule/DiscordConfig";
+import { DateUtils } from "../../../../Utilities/DateUtils";
 import { WikiCache } from "../../../../Modules/CachingModule";
 import { PrivateBot } from "../../../../Modules/DiscordModule/PrivateBot";
 
@@ -156,7 +156,7 @@ export default function listener(): void {
                 },
                 {
                   name: "Account Age",
-                  value: `Joined the server **${DateUtilities.distanceFromNow(resolvedAuthor.member.joinedTimestamp)}**. Account created **${DateUtilities.distanceFromNow(message.author.createdTimestamp)}**.`,
+                  value: `Joined the server **${DateUtils.distanceFromNow(resolvedAuthor.member.joinedTimestamp)}**. Account created **${DateUtils.distanceFromNow(message.author.createdTimestamp)}**.`,
                 },
                 {
                   name: "Affected Channels",

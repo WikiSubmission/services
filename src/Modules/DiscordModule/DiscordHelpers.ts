@@ -1,6 +1,6 @@
 import EventEmitter from "events";
 import { FileUtils } from "../../Utilities/FileUtils";
-import { SystemUtilities } from "../../Utilities/SystemUtils";
+import { SystemUtils } from "../../Utilities/SystemUtils";
 import { WikiEvents } from "../LogsModule";
 import { WikiSlashCommand } from "./Types/WikiSlashCommand";
 import {
@@ -83,16 +83,16 @@ export class DiscordHelpers {
     token: string;
     clientId: string;
   }> {
-    return await SystemUtilities.cachedFunction(
+    return await SystemUtils.cachedFunction(
       "DiscordCredentials",
       "1h",
       async () => {
         // Since it's a private bot anyway, we will use the same token / client ID.
         return {
-          token: await SystemUtilities.getEnvFromSupabase(
+          token: await SystemUtils.getEnvFromSupabase(
             "DISCORD_SUBMISSIONMOD_TOKEN",
           ),
-          clientId: await SystemUtilities.getEnvFromSupabase(
+          clientId: await SystemUtils.getEnvFromSupabase(
             "DISCORD_SUBMISSIONMOD_CLIENT_ID",
           ),
         };
@@ -108,17 +108,17 @@ export class DiscordHelpers {
     token: string;
     clientId: string;
   }> {
-    return await SystemUtilities.cachedFunction(
+    return await SystemUtils.cachedFunction(
       "DiscordPublicBotCredentials",
       "1h",
       async () => {
         return {
-          token: await SystemUtilities.getEnvFromSupabase(
+          token: await SystemUtils.getEnvFromSupabase(
             process.env.NODE_ENV === "production"
               ? "DISCORD_WIKISUBMISSION_TOKEN"
               : "DISCORD_TESTING_TOKEN",
           ),
-          clientId: await SystemUtilities.getEnvFromSupabase(
+          clientId: await SystemUtils.getEnvFromSupabase(
             process.env.NODE_ENV === "production"
               ? "DISCORD_WIKISUBMISSION_CLIENT_ID"
               : "DISCORD_TESTING_CLIENT_ID",

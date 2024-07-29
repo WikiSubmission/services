@@ -1,6 +1,6 @@
 import { WikiSlashCommand } from "../../../../Modules/DiscordModule/Types/WikiSlashCommand";
 import { DiscordMemberManager } from "../../../../Modules/DiscordModule/Utilities/DiscordMemberManager";
-import { DiscordConfig } from "../../../../Modules/DiscordModule/Vars/DiscordConfig";
+import { DiscordConfig } from "../../../../Modules/DiscordModule/DiscordConfig";
 
 export default function command(): WikiSlashCommand {
   return {

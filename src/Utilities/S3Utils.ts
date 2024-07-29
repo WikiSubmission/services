@@ -10,7 +10,7 @@ import {
 } from "@aws-sdk/client-s3";
 
 import { Readable } from "stream";
-import { SystemUtilities } from "./SystemUtils";
+import { SystemUtils } from "./SystemUtils";
 
 export interface GetObjectCommandOutputExtended extends GetObjectCommandOutput {
   Key: string;
@@ -24,11 +24,11 @@ export interface PutObjectCommandOutputExtended extends PutObjectCommandOutput {
 
 export class S3Utils {
   static async listObjects(additionalParams?: ListObjectsV2CommandInput) {
-    return await SystemUtilities.cachedFunction(
+    return await SystemUtils.cachedFunction(
       "S3ListObjects",
       "3s",
       async () => {
-        const client = await SystemUtilities.getAWSClient();
+        const client = await SystemUtils.getS3Client();
         const response = await client.send(
           new ListObjectsV2Command({
             ...additionalParams,
@@ -46,7 +46,7 @@ export class S3Utils {
     additionalParams?: GetObjectCommandInput,
   ): Promise<GetObjectCommandOutputExtended | null> {
     try {
-      const client = await SystemUtilities.getAWSClient();
+      const client = await SystemUtils.getS3Client();
 
       const response = await client.send(
         new GetObjectCommand({
@@ -59,7 +59,7 @@ export class S3Utils {
       return {
         ...response,
         Key: key,
-        Extension: SystemUtilities.getFileExtension(key),
+        Extension: SystemUtils.getFileExtension(key),
       };
     } catch {
       return this.getObjectViaLookup(key);
@@ -74,7 +74,7 @@ export class S3Utils {
     additionalParams?: PutObjectCommandInput,
   ): Promise<PutObjectCommandOutputExtended | null> {
     try {
-      const client = await SystemUtilities.getAWSClient();
+      const client = await SystemUtils.getS3Client();
 
       const response = await fetch(url);
       if (!response.ok) return null;
@@ -98,7 +98,7 @@ export class S3Utils {
         ? {
             ...result,
             Key: key,
-            Extension: SystemUtilities.getFileExtension(key),
+            Extension: SystemUtils.getFileExtension(key),
           }
         : null;
     } catch {
@@ -119,7 +119,7 @@ export class S3Utils {
     key: string,
     additionalParams?: ListObjectsV2CommandInput,
   ): Promise<string | null> {
-    return SystemUtilities.cachedFunction(
+    return SystemUtils.cachedFunction(
       `S3:LookupObjectKey`,
       "1s",
       async () => {

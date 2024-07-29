@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "discord.js";
-import { NetworkUtilities } from "../../../Utilities/NetworkUtilities";
+import { NetworkUtils } from "../../../Utilities/NetworkUtilities";
 import { Ports } from "../../../Vars/Ports";
 import { DataQuranItem } from "../../../Modules/DatabaseModule/Types/DataQuran";
 import { WikiSlashCommand } from "../../../Modules/DiscordModule/Types/WikiSlashCommand";
@@ -35,7 +35,7 @@ export default function command(): WikiSlashCommand {
       },
     ],
     handler: async (interaction) => {
-      const result = await NetworkUtilities.GET_INTERNAL<DataQuranItem[]>(
+      const result = await NetworkUtils.GET_INTERNAL<DataQuranItem[]>(
         `https://api.wikisubmission.org`,
         "/quran/random-verse?normalize_god_capitalization=true",
       );

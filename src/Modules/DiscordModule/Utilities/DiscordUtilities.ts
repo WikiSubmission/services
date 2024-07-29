@@ -11,7 +11,7 @@ import {
   User,
 } from "discord.js";
 import { DiscordModeratedGuild } from "../Types/ModeratedGuild";
-import { DiscordConfig } from "../Vars/DiscordConfig";
+import { DiscordConfig } from "../DiscordConfig";
 import { WikiEvents } from "../../LogsModule";
 import { WikiSlashCommand } from "../Types/WikiSlashCommand";
 import { OriginalSlashCommand } from "../Types/OriginalSlashCommand";

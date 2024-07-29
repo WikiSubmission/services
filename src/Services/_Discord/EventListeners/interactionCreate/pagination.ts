@@ -1,4 +1,4 @@
-import { SystemUtilities } from "../../../../Utilities/SystemUtils";
+import { SystemUtils } from "../../../../Utilities/SystemUtils";
 import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/DiscordUtilities";
 import { SerializedInteraction } from "../../../../Modules/DiscordModule/Types/SerializedInteraction";
 import { DiscordQuranRequest } from "../../../../Modules/DiscordModule/Utilities/DiscordQuranRequest";
@@ -14,7 +14,7 @@ export default function listener(): void {
       if (interaction.isButton()) {
         if (interaction.customId.startsWith("page_")) {
           // Get cached interaction.
-          const db = await SystemUtilities.getSupabaseClient();
+          const db = await SystemUtils.getSupabaseClient();
           const request = await db
             .from("GlobalCache")
             .select("*")

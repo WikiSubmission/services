@@ -1,10 +1,10 @@
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder } from "discord.js";
 import { DiscordMemberManager } from "../../../../Modules/DiscordModule/Utilities/DiscordMemberManager";
-import { DiscordConfig } from "../../../../Modules/DiscordModule/Vars/DiscordConfig";
+import { DiscordConfig } from "../../../../Modules/DiscordModule/DiscordConfig";
 import { DiscordAlert } from "../../../../Modules/DiscordModule/Utilities/DiscordAlertManager";
 import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/DiscordUtilities";
 import { S3Utils } from "../../../../Utilities/S3Utils";
-import { SystemUtilities } from "../../../../Utilities/SystemUtils";
+import { SystemUtils } from "../../../../Utilities/SystemUtils";
 import { PrivateBot } from "../../../../Modules/DiscordModule/PrivateBot";
 
 /**
@@ -182,7 +182,7 @@ export default function listener(): void {
           ],
         });
 
-        await SystemUtilities.stimulateDelay(19 * 6);
+        await SystemUtils.stimulateDelay(19 * 6);
       }
 
       await message.delete();

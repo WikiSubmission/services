@@ -10,10 +10,10 @@ import {
   User,
 } from "discord.js";
 import { DiscordUtilities } from "./DiscordUtilities";
-import { DateUtilities } from "../../../Utilities/DateUtils";
+import { DateUtils } from "../../../Utilities/DateUtils";
 import { DiscordDBMember } from "../Types/DiscordDBMember";
 import { DiscordModeratedGuild } from "../Types/ModeratedGuild";
-import { SystemUtilities } from "../../../Utilities/SystemUtils";
+import { SystemUtils } from "../../../Utilities/SystemUtils";
 import { DiscordAlert } from "./DiscordAlertManager";
 import { PrivateBot } from "../PrivateBot";
 
@@ -76,7 +76,7 @@ export class DiscordMemberManager {
   }
 
   accountCreatedRelativeTimeString(): string {
-    return DateUtilities.distanceFromNow(
+    return DateUtils.distanceFromNow(
       this.member?.user.createdTimestamp || "recently",
     );
   }
@@ -132,7 +132,7 @@ export class DiscordMemberManager {
 
       // Update database.
       if (updateDatabase) {
-        const supabaseClient = await SystemUtilities.getSupabaseClient();
+        const supabaseClient = await SystemUtils.getSupabaseClient();
         await supabaseClient.from("DiscordMembers").upsert<DiscordDBMember>({
           id: `${this.member.user.id}*${this.moderatedGuild.id}`,
           user_id: this.member.user.id,
@@ -230,7 +230,7 @@ export class DiscordMemberManager {
 
     // Update database.
     if (updateDatabase) {
-      const supabaseClient = await SystemUtilities.getSupabaseClient();
+      const supabaseClient = await SystemUtils.getSupabaseClient();
 
       await supabaseClient.from("DiscordMembers").upsert<DiscordDBMember>({
         id: `${this.member.id}*${this.moderatedGuild.id}`,
@@ -339,7 +339,7 @@ export class DiscordMemberManager {
     // Success case.
     if (addRole === "ADDED" && removeRole === "REMOVED") {
       // Update jail database.
-      const supabaseClient = await SystemUtilities.getSupabaseClient();
+      const supabaseClient = await SystemUtils.getSupabaseClient();
       await supabaseClient.from("DiscordMembers").upsert<DiscordDBMember>({
         id: `${this.member.user.id}*${this.member.guild.id}`,
         user_id: this.member.id,
@@ -453,7 +453,7 @@ export class DiscordMemberManager {
     // Success case.
     if (removeRole === "REMOVED" && addRole === "ADDED") {
       // Update database.
-      const supabaseClient = await SystemUtilities.getSupabaseClient();
+      const supabaseClient = await SystemUtils.getSupabaseClient();
 
       await supabaseClient.from("DiscordMembers").upsert<DiscordDBMember>({
         id: `${this.member.user.id}*${this.member.guild.id}`,

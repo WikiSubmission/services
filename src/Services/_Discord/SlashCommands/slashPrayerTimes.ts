@@ -1,8 +1,8 @@
 import { EmbedBuilder } from "discord.js";
 import { WikiSlashCommand } from "../../../Modules/DiscordModule/Types/WikiSlashCommand";
-import { NetworkUtilities } from "../../../Utilities/NetworkUtilities";
+import { NetworkUtils } from "../../../Utilities/NetworkUtilities";
 import { DataPrayerTimes } from "../../../Modules/DatabaseModule/Types/DataPrayerTimes";
-import { SystemUtilities } from "../../../Utilities/SystemUtils";
+import { SystemUtils } from "../../../Utilities/SystemUtils";
 
 export default function command(): WikiSlashCommand {
   return {
@@ -44,7 +44,7 @@ export default function command(): WikiSlashCommand {
       },
     ],
     handler: async (interaction) => {
-      const request = await NetworkUtilities.GET_INTERNAL<DataPrayerTimes>(
+      const request = await NetworkUtils.GET_INTERNAL<DataPrayerTimes>(
         `https://api.wikisubmission.org`,
         `/prayer-times/?q=${interaction.options.get("location")!.value}`,
       );
@@ -112,5 +112,5 @@ function codify(s: string) {
 }
 
 function capitalized(s: string) {
-  return SystemUtilities.capitalize(s);
+  return SystemUtils.capitalize(s);
 }

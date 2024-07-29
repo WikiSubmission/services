@@ -1,10 +1,10 @@
 import { EmbedBuilder, VoiceChannel } from "discord.js";
 import { DiscordMemberManager } from "../../../../Modules/DiscordModule/Utilities/DiscordMemberManager";
 import { DiscordAlert } from "../../../../Modules/DiscordModule/Utilities/DiscordAlertManager";
-import { DateUtilities } from "../../../../Utilities/DateUtils";
+import { DateUtils } from "../../../../Utilities/DateUtils";
 import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/DiscordUtilities";
 import { DiscordDBMember } from "../../../../Modules/DiscordModule/Types/DiscordDBMember";
-import { SystemUtilities } from "../../../../Utilities/SystemUtils";
+import { SystemUtils } from "../../../../Utilities/SystemUtils";
 import { PrivateBot } from "../../../../Modules/DiscordModule/PrivateBot";
 
 export default function listener(): void {
@@ -12,7 +12,7 @@ export default function listener(): void {
     if (!DiscordUtilities.getModeratedGuild(member.guild)) return;
 
     const resolvedMember = await DiscordMemberManager.get(member, member.guild);
-    const supabaseClient = await SystemUtilities.getSupabaseClient();
+    const supabaseClient = await SystemUtils.getSupabaseClient();
 
     if (
       resolvedMember &&
@@ -44,7 +44,7 @@ export default function listener(): void {
               },
               {
                 name: "Joined Server",
-                value: DateUtilities.distanceFromNow(member.joinedTimestamp),
+                value: DateUtils.distanceFromNow(member.joinedTimestamp),
               },
               {
                 name: "Account Created",

@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "discord.js";
-import { DiscordConfig } from "../../../../Modules/DiscordModule/Vars/DiscordConfig";
+import { DiscordConfig } from "../../../../Modules/DiscordModule/DiscordConfig";
 import { DiscordScheduledActions } from "../../../../Modules/DiscordModule/Utilities/DiscordScheduledActions";
 import { PrivateBot } from "../../../../Modules/DiscordModule/PrivateBot";
 

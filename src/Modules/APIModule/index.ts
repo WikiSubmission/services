@@ -10,7 +10,7 @@ import { WikiEvents } from "../LogsModule";
 import { WikiCache } from "../CachingModule";
 import { APIEndpoint } from "./Types/APIEndpoint";
 import { APIError } from "./Types/APIError";
-import { SystemUtilities } from "../../Utilities/SystemUtils";
+import { SystemUtils } from "../../Utilities/SystemUtils";
 import { MemoryCache } from "cache-manager";
 import { FileUtils } from "../../Utilities/FileUtils";
 import { HostAddress } from "../../Vars/Host";
@@ -94,7 +94,7 @@ export class WikiAPI {
       for (const endpoint of endpoints) {
         this.server[endpoint.method](endpoint.route, async (req, res) => {
           const now = Date.now();
-          const id = SystemUtilities.generateUUID(4);
+          const id = SystemUtils.generateUUID(4);
 
           // Error placeholder.
           let errorThrown: APIError | null = null;
@@ -172,9 +172,13 @@ export class WikiAPI {
         const entry = await WikiCache.get(this.service, req.originalUrl);
         if (
           entry &&
-          (entry instanceof APIJSONResponse ||
-            entry instanceof APIFileResponse ||
-            entry instanceof APIRedirectResponse)
+          (
+            entry instanceof APIJSONResponse
+            ||
+            entry instanceof APIFileResponse
+            ||
+            entry instanceof APIRedirectResponse
+          )
         ) {
           return entry;
         }
@@ -217,17 +221,15 @@ export class WikiAPI {
   ): Promise<Express.Response | void> {
     try {
       if (response instanceof APIJSONResponse) {
-        const jsonResponse = response;
-        return res.status(jsonResponse.http_status_code).json({
-          ...jsonResponse,
-          results: this.filterObjectForCustomFields(req, jsonResponse.results),
+        return res.status(response.http_status_code).json({
+          ...response,
+          results: this.filterObjectForCustomFields(req, response.results),
         });
       } else if (response instanceof APIRedirectResponse) {
-        const redirectResponse = response;
         // If rewrite is true, fetch the resource and pipe stream to response (maintaining the same URL)
-        if (redirectResponse.rewrite) {
+        if (response.rewrite) {
           try {
-            const cdnResponse = await fetch(redirectResponse.url);
+            const cdnResponse = await fetch(response.url);
 
             if (!cdnResponse.ok) {
               throw new Error(
@@ -270,23 +272,21 @@ export class WikiAPI {
             console.error(err);
           }
         }
-        return res.status(301).redirect(redirectResponse.url);
+        return res.status(301).redirect(response.url);
       } else if (response instanceof APIFileResponse) {
-        const fileResponse = response;
-
         res.setHeader(
           "Content-Disposition",
-          `${req.query.dl === "true" ? "attachment" : fileResponse.forceDownload === true ? "attachment" : "inline"}; filename=${fileResponse.name}.${fileResponse.extension}`,
+          `${req.query.dl === "true" ? "attachment" : response.forceDownload === true ? "attachment" : "inline"}; filename=${response.name}.${response.extension}`,
         );
 
         res.setHeader("Cache-Control", "public, max-age=3600");
 
-        res.type(fileResponse.type);
+        res.type(response.type);
 
-        if (fileResponse.body instanceof Readable) {
+        if (response.body instanceof Readable) {
           // @ts-ignore
-          fileResponse.body.pipe(res);
-        } else if (typeof fileResponse.body === "string") {
+          response.body.pipe(res);
+        } else if (typeof response.body === "string") {
           res.status(200).send(response.body);
         } else {
           throw new Error(`Unsupported file type`);
@@ -336,7 +336,7 @@ export class WikiAPI {
    * @description Returns the associated endpoints for a given service
    */
   private async getEndpoints(): Promise<APIEndpoint[]> {
-    return await SystemUtilities.cachedFunction(
+    return await SystemUtils.cachedFunction(
       `${this.service.config.name}:endpoints`,
       "1m",
       async () => {
@@ -347,8 +347,8 @@ export class WikiAPI {
         const endpoints =
           typeof this.service.config.api.endpoints === "string"
             ? await FileUtils.getDefaultExportsFromDirectory<APIEndpoint>(
-                `/${this.service.config.name}/Routes`,
-              )
+              `/${this.service.config.name}/Routes`,
+            )
             : this.service.config.api.endpoints;
 
         // Ensure broader / catch-all endpoints are lined up last as Express relies on this order to route requests.

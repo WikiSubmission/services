@@ -1,7 +1,7 @@
 import { PrivateBot } from "../../../../Modules/DiscordModule/PrivateBot";
 import { DiscordMemberManager } from "../../../../Modules/DiscordModule/Utilities/DiscordMemberManager";
 import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/DiscordUtilities";
-import { DiscordConfig } from "../../../../Modules/DiscordModule/Vars/DiscordConfig";
+import { DiscordConfig } from "../../../../Modules/DiscordModule/DiscordConfig";
 
 export default function listener(): void {
   PrivateBot.shared.addEventListener(

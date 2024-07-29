@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "discord.js";
 import { DiscordScheduledActions } from "../../../Modules/DiscordModule/Utilities/DiscordScheduledActions";
-import { DiscordConfig } from "../../../Modules/DiscordModule/Vars/DiscordConfig";
+import { DiscordConfig } from "../../../Modules/DiscordModule/DiscordConfig";
 import { DiscordAlert } from "../../../Modules/DiscordModule/Utilities/DiscordAlertManager";
 
 export default function action(): void {

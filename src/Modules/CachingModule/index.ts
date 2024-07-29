@@ -1,7 +1,7 @@
 import { MemoryCache, caching } from "cache-manager";
 import { WikiService } from "../ServiceModule";
 import { TimeStrings } from "../../Vars/TimeStrings";
-import { SystemUtilities } from "../../Utilities/SystemUtils";
+import { SystemUtils } from "../../Utilities/SystemUtils";
 
 const WikiMemoryCaches = new Map<string, MemoryCache>();
 
@@ -51,7 +51,7 @@ export class WikiCache {
     ttl: TimeStrings,
   ): Promise<void> {
     const store = await this.getStore(service);
-    return await store.set(key, data, SystemUtilities.timeToMs(ttl));
+    return await store.set(key, data, SystemUtils.timeToMs(ttl));
   }
 
   static async delete(

@@ -1,8 +1,8 @@
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { DiscordRequestResult } from "../Types/DiscordRequestResult";
 import { DiscordRequest } from "./DiscordRequest";
-import { NetworkUtilities } from "../../../Utilities/NetworkUtilities";
-import { SystemUtilities } from "../../../Utilities/SystemUtils";
+import { NetworkUtils } from "../../../Utilities/NetworkUtilities";
+import { SystemUtils } from "../../../Utilities/SystemUtils";
 import { DiscordUtilities } from "./DiscordUtilities";
 import { DataMocMediaItem } from "../../DatabaseModule/Types/DataMocMedia";
 
@@ -37,7 +37,7 @@ export class DiscordMediaRequest extends DiscordRequest {
 
     const path = `?q=${query}&highlight=true&ignore_word_order=${this.getStringInput("strict-search") === "yes" ? "false" : "true"}`;
 
-    const request = await NetworkUtilities.GET_INTERNAL<DataMocMediaItem[]>(
+    const request = await NetworkUtils.GET_INTERNAL<DataMocMediaItem[]>(
       `https://api.wikisubmission.org`,
       `/moc/media/search/${path}`,
     );
@@ -54,7 +54,7 @@ export class DiscordMediaRequest extends DiscordRequest {
 
       // Multi-page? Cache interaction.
       if (description.length > 1) {
-        const db = await SystemUtilities.getSupabaseClient();
+        const db = await SystemUtils.getSupabaseClient();
         await db.from("GlobalCache").insert({
           key: this.interaction.id,
           value: JSON.stringify(

@@ -1,8 +1,8 @@
 import { EmbedBuilder } from "discord.js";
-import { DiscordConfig } from "../../../Modules/DiscordModule/Vars/DiscordConfig";
+import { DiscordConfig } from "../../../Modules/DiscordModule/DiscordConfig";
 import { DataQuranItem } from "../../../Modules/DatabaseModule/Types/DataQuran";
 import { DiscordUtilities } from "../../../Modules/DiscordModule/Utilities/DiscordUtilities";
-import { NetworkUtilities } from "../../../Utilities/NetworkUtilities";
+import { NetworkUtils } from "../../../Utilities/NetworkUtilities";
 import { DiscordScheduledActions } from "../../../Modules/DiscordModule/Utilities/DiscordScheduledActions";
 
 export default function action(): void {
@@ -18,7 +18,7 @@ export default function action(): void {
             knownGuild.id,
           );
           if (quranChannel) {
-            const randomVerse = await NetworkUtilities.GET_INTERNAL<
+            const randomVerse = await NetworkUtils.GET_INTERNAL<
               DataQuranItem[]
             >("https://api.wikisubmission.org", "/quran/random-verse");
             if (randomVerse && randomVerse.results) {

@@ -3,7 +3,16 @@ import { WikiCache } from "../Modules/CachingModule";
 import { TimeStrings } from "../Vars/TimeStrings";
 import { APIJSONResponse } from "../Modules/APIModule/Types/APIResponse";
 
-export class NetworkUtilities {
+interface RequestOptions {
+  headers?: { [key: string]: string };
+  backupEndpoint?: string;
+  cacheResult?: { duration: TimeStrings };
+  rateLimit?: {
+    maxRequestsPerSecond: number;
+  };
+}
+
+export class NetworkUtils {
   static async GET<T>(
     baseEndpoint: string,
     path: string,
@@ -24,24 +33,6 @@ export class NetworkUtilities {
       undefined,
       options,
     );
-  }
-
-  static async POST<T>(
-    baseEndpoint: string,
-    path: string,
-    body?: { [string: string]: any },
-    options?: RequestOptions,
-  ): Promise<T | null> {
-    return this.request<T>("POST", baseEndpoint, path, body, options);
-  }
-
-  static async PATCH<T>(
-    baseEndpoint: string,
-    path: string,
-    body?: { [string: string]: any },
-    options?: RequestOptions,
-  ): Promise<T | null> {
-    return this.request<T>("PATCH", baseEndpoint, path, body, options);
   }
 
   private static async request<T>(
@@ -151,13 +142,4 @@ export class NetworkUtilities {
   ): Promise<void> {
     await WikiCache.set("PublicCache", key, data, duration ? duration : "5s");
   }
-}
-
-interface RequestOptions {
-  headers?: { [key: string]: string };
-  backupEndpoint?: string;
-  cacheResult?: { duration: TimeStrings };
-  rateLimit?: {
-    maxRequestsPerSecond: number;
-  };
 }

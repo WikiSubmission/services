@@ -1,8 +1,8 @@
 import { PrivateBot } from "../../../../Modules/DiscordModule/PrivateBot";
 import { DiscordAlert } from "../../../../Modules/DiscordModule/Utilities/DiscordAlertManager";
 import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/DiscordUtilities";
-import { DiscordConfig } from "../../../../Modules/DiscordModule/Vars/DiscordConfig";
-import { SystemUtilities } from "../../../../Utilities/SystemUtils";
+import { DiscordConfig } from "../../../../Modules/DiscordModule/DiscordConfig";
+import { SystemUtils } from "../../../../Utilities/SystemUtils";
 
 /**
  * Message event listener to send the role menu if an admin or above types "!rolemenu".
@@ -46,7 +46,7 @@ export default function listener(): void {
       ],
     });
 
-    await SystemUtilities.stimulateDelay(500);
+    await SystemUtils.stimulateDelay(500);
 
     await new DiscordAlert(message.guildId).send("CHOOSE-ROLES", {
       content: `🌎 **Region**`,
@@ -70,7 +70,7 @@ export default function listener(): void {
       ],
     });
 
-    await SystemUtilities.stimulateDelay(500);
+    await SystemUtils.stimulateDelay(500);
 
     await new DiscordAlert(message.guildId).send("CHOOSE-ROLES", {
       content: `🕰️ **Age**`,
@@ -93,7 +93,7 @@ export default function listener(): void {
       ],
     });
 
-    await SystemUtilities.stimulateDelay(500);
+    await SystemUtils.stimulateDelay(500);
 
     await new DiscordAlert(message.guildId).send("CHOOSE-ROLES", {
       content: `💍 **Marital Status**`,
@@ -116,7 +116,7 @@ export default function listener(): void {
       ],
     });
 
-    await SystemUtilities.stimulateDelay(500);
+    await SystemUtils.stimulateDelay(500);
 
     const reminderRoles = moderatedGuild.choosableRoles
       .filter((role) => role.category === "Reminders")[0]
@@ -143,7 +143,7 @@ export default function listener(): void {
       ],
     });
 
-    await SystemUtilities.stimulateDelay(500);
+    await SystemUtils.stimulateDelay(500);
 
     const otherLanguageRoles = moderatedGuild.choosableRoles
       .filter((role) => role.category === "Other Languages")[0]
@@ -169,7 +169,7 @@ export default function listener(): void {
       ],
     });
 
-    await SystemUtilities.stimulateDelay(500);
+    await SystemUtils.stimulateDelay(500);
 
     await new DiscordAlert(message.guildId).send("CHOOSE-ROLES", {
       components: [

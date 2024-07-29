@@ -1,8 +1,8 @@
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { DiscordRequestResult } from "../Types/DiscordRequestResult";
 import { DiscordRequest } from "./DiscordRequest";
-import { NetworkUtilities } from "../../../Utilities/NetworkUtilities";
-import { SystemUtilities } from "../../../Utilities/SystemUtils";
+import { NetworkUtils } from "../../../Utilities/NetworkUtilities";
+import { SystemUtils } from "../../../Utilities/SystemUtils";
 import { DiscordUtilities } from "./DiscordUtilities";
 import { DataNewslettersItem } from "../../DatabaseModule/Types/DataNewsletters";
 
@@ -37,7 +37,7 @@ export class DiscordNewsletterRequest extends DiscordRequest {
 
     const path = `?q=${query}&highlight=true&ignore_word_order=${this.getStringInput("strict-search") === "yes" ? "false" : "true"}`;
 
-    const request = await NetworkUtilities.GET_INTERNAL<DataNewslettersItem[]>(
+    const request = await NetworkUtils.GET_INTERNAL<DataNewslettersItem[]>(
       `https://api.wikisubmission.org`,
       `/moc/newsletters/search/${path}`,
     );
@@ -48,7 +48,7 @@ export class DiscordNewsletterRequest extends DiscordRequest {
         request.results
           .map(
             (i) =>
-              `[${i.sp_year} ${SystemUtilities.capitalize(i.sp_month)}, page ${i.sp_page}](https://www.masjidtucson.org/publications/books/sp/${i.sp_year}/${i.sp_month}/page${i.sp_page}.html) - ${i.sp_content}`,
+              `[${i.sp_year} ${SystemUtils.capitalize(i.sp_month)}, page ${i.sp_page}](https://www.masjidtucson.org/publications/books/sp/${i.sp_year}/${i.sp_month}/page${i.sp_page}.html) - ${i.sp_content}`,
           )
           .join("\n\n"),
       );
@@ -56,7 +56,7 @@ export class DiscordNewsletterRequest extends DiscordRequest {
 
       // Multi-page? Cache interaction.
       if (description.length > 1) {
-        const db = await SystemUtilities.getSupabaseClient();
+        const db = await SystemUtils.getSupabaseClient();
         await db.from("GlobalCache").insert({
           key: this.interaction.id,
           value: JSON.stringify(

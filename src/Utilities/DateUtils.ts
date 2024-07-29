@@ -1,6 +1,6 @@
 import { formatDistance, add, sub } from "date-fns";
 
-export class DateUtilities {
+export class DateUtils {
   static distanceFromNow(targetDate: Date | number | string | null): string {
     if (!targetDate) return `now`;
 

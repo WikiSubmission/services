@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "discord.js";
-import { NetworkUtilities } from "../../../../Utilities/NetworkUtilities";
+import { NetworkUtils } from "../../../../Utilities/NetworkUtilities";
 import { DataQuranItem } from "../../../../Modules/DatabaseModule/Types/DataQuran";
 import { PrivateBot } from "../../../../Modules/DiscordModule/PrivateBot";
 
@@ -15,7 +15,7 @@ export default function listener(): void {
     let description = "";
     if (verses.length > 0) {
       for (const verse of verses) {
-        const request = await NetworkUtilities.GET_INTERNAL<DataQuranItem[]>(
+        const request = await NetworkUtils.GET_INTERNAL<DataQuranItem[]>(
           "https://api.wikisubmission.org",
           `/quran/${verse.toLowerCase().replace("q", "")}&normalize_god_capitalization=true`,
         );

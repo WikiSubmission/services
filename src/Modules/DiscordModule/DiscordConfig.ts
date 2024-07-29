@@ -1,4 +1,4 @@
-import { DiscordModeratedGuild } from "../Types/ModeratedGuild";
+import { DiscordModeratedGuild } from "./Types/ModeratedGuild";
 
 export class DiscordConfig {
   static mediaRestrictionHours = 8;

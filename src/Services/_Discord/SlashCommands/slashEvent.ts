@@ -5,9 +5,9 @@ import {
   EmbedBuilder,
 } from "discord.js";
 import { WikiSlashCommand } from "../../../Modules/DiscordModule/Types/WikiSlashCommand";
-import { DiscordConfig } from "../../../Modules/DiscordModule/Vars/DiscordConfig";
+import { DiscordConfig } from "../../../Modules/DiscordModule/DiscordConfig";
 import { DiscordUtilities } from "../../../Modules/DiscordModule/Utilities/DiscordUtilities";
-import { DateUtilities } from "../../../Utilities/DateUtils";
+import { DateUtils } from "../../../Utilities/DateUtils";
 import { WikiEvents } from "../../../Modules/LogsModule";
 import { PrivateBot } from "../../../Modules/DiscordModule/PrivateBot";
 
@@ -50,7 +50,7 @@ export default function command(): WikiSlashCommand {
         const description = interaction.options.get("description")?.value as
           | string
           | undefined;
-        const oneHourFromNow = DateUtilities.getSpecificDate(
+        const oneHourFromNow = DateUtils.getSpecificDate(
           1,
           "hour",
           "future",
@@ -92,7 +92,7 @@ export default function command(): WikiSlashCommand {
                 },
                 {
                   name: `Scheduled Start Time`,
-                  value: DateUtilities.distanceFromNow(oneHourFromNow),
+                  value: DateUtils.distanceFromNow(oneHourFromNow),
                 },
                 {
                   name: `Link`,

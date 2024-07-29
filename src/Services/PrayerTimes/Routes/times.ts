@@ -10,8 +10,8 @@ import {
   GoogleAPITimezoneResponse,
 } from "../../../Modules/DatabaseModule/Types/ExternalGoogle";
 import { Ports } from "../../../Vars/Ports";
-import { NetworkUtilities } from "../../../Utilities/NetworkUtilities";
-import { SystemUtilities } from "../../../Utilities/SystemUtils";
+import { NetworkUtils } from "../../../Utilities/NetworkUtilities";
+import { SystemUtils } from "../../../Utilities/SystemUtils";
 
 export default function route(): APIEndpoint {
   return {
@@ -23,7 +23,7 @@ export default function route(): APIEndpoint {
     },
     handler: async (req, res) => {
       const ENV_GOOGLE_API_KEY =
-        await SystemUtilities.getEnvFromSupabase("GOOGLE_API_KEY");
+        await SystemUtils.getEnvFromSupabase("GOOGLE_API_KEY");
 
       const requestQuery = req.query?.q?.toString();
 
@@ -103,7 +103,7 @@ export default function route(): APIEndpoint {
         // --> region
         // --> latitude, longitude
 
-        const CityData = await NetworkUtilities.GET<GoogleMapsResponse>(
+        const CityData = await NetworkUtils.GET<GoogleMapsResponse>(
           `https://maps.googleapis.com`,
           `/maps/api/geocode/json?address=${requestQuery}&key=${ENV_GOOGLE_API_KEY}`,
         );
@@ -169,7 +169,7 @@ export default function route(): APIEndpoint {
         const longitude = encodeURIComponent(Response.coordinates.longitude);
 
         const TimezoneData =
-          await NetworkUtilities.GET<GoogleAPITimezoneResponse>(
+          await NetworkUtils.GET<GoogleAPITimezoneResponse>(
             `https://maps.googleapis.com/maps/api/timezone`,
             `/json?language=en&location=${latitude},${longitude}&timestamp=${Math.floor(Date.now() / 1000)}&key=${ENV_GOOGLE_API_KEY}`,
           );
@@ -198,14 +198,14 @@ export default function route(): APIEndpoint {
 
         // 3. locally compute prayer times (UTC)
         const UTCTimesRequest =
-          await NetworkUtilities.GET_INTERNAL<DataPrayerTimesLocalResponseElement>(
+          await NetworkUtils.GET_INTERNAL<DataPrayerTimesLocalResponseElement>(
             `http://0.0.0.0:${Ports.PrayerTimesAPI}/prayer-times/precise`,
             `?lat=${latitude}&lng=${longitude}`,
           );
 
         // 4. locally compute prayer times (LOCAL TIMEZONE)
         const LocalTimesRequest =
-          await NetworkUtilities.GET_INTERNAL<DataPrayerTimesLocalResponseElement>(
+          await NetworkUtils.GET_INTERNAL<DataPrayerTimesLocalResponseElement>(
             `http://0.0.0.0:${Ports.PrayerTimesAPI}/prayer-times/precise`,
             `?lat=${latitude}&lng=${longitude}&timezoneOffset=${
               TotalUTCOffset / 60
@@ -402,12 +402,12 @@ export default function route(): APIEndpoint {
         // set statusString
         Response.status_string =
           req.query?.highlight === "true"
-            ? `It's currently **${SystemUtilities.capitalize(Response.current_prayer)}** (began ${
+            ? `It's currently **${SystemUtils.capitalize(Response.current_prayer)}** (began ${
                 Response.current_prayer_time_elapsed
-              } ago). **${SystemUtilities.capitalize(Response.upcoming_prayer)}** starts in ${Response.upcoming_prayer_time_left}.`
-            : `It's currently ${SystemUtilities.capitalize(Response.current_prayer)} (began ${
+              } ago). **${SystemUtils.capitalize(Response.upcoming_prayer)}** starts in ${Response.upcoming_prayer_time_left}.`
+            : `It's currently ${SystemUtils.capitalize(Response.current_prayer)} (began ${
                 Response.current_prayer_time_elapsed
-              } ago). ${SystemUtilities.capitalize(Response.upcoming_prayer)} starts in ${Response.upcoming_prayer_time_left}.`;
+              } ago). ${SystemUtils.capitalize(Response.upcoming_prayer)} starts in ${Response.upcoming_prayer_time_left}.`;
 
         return new APIJSONResponse({
           success: true,

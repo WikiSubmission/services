@@ -1,5 +1,5 @@
 import { EmbedBuilder, GuildMember } from "discord.js";
-import { DiscordConfig } from "../../../Modules/DiscordModule/Vars/DiscordConfig";
+import { DiscordConfig } from "../../../Modules/DiscordModule/DiscordConfig";
 import { DiscordScheduledActions } from "../../../Modules/DiscordModule/Utilities/DiscordScheduledActions";
 import { DiscordAlert } from "../../../Modules/DiscordModule/Utilities/DiscordAlertManager";
 import { PrivateBot } from "../../../Modules/DiscordModule/PrivateBot";

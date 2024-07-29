@@ -10,7 +10,7 @@ import { DatabaseConfig } from "./Types/Database";
 import { DataQuranItem } from "./Types/DataQuran";
 import { DataMocMediaItem } from "./Types/DataMocMedia";
 import { DataNewslettersItem } from "./Types/DataNewsletters";
-import { SystemUtilities } from "../../Utilities/SystemUtils";
+import { SystemUtils } from "../../Utilities/SystemUtils";
 
 export type WikiTablesTypesMap = {
   DataQuran: DataQuranItem[];
@@ -48,7 +48,7 @@ export class WikiDatabase {
     if (!this.service) return null; // Assert access.
 
     // Initialize Supabase client.
-    this.supabaseClient = await SystemUtilities.getSupabaseClient();
+    this.supabaseClient = await SystemUtils.getSupabaseClient();
 
     // Loop over every table.
     for (const table of this.service.config.databases || []) {

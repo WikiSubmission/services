@@ -2,7 +2,7 @@ import { EmbedBuilder } from "discord.js";
 import { DiscordAlert } from "../../../../Modules/DiscordModule/Utilities/DiscordAlertManager";
 import { DiscordMemberManager } from "../../../../Modules/DiscordModule/Utilities/DiscordMemberManager";
 import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/DiscordUtilities";
-import { DiscordConfig } from "../../../../Modules/DiscordModule/Vars/DiscordConfig";
+import { DiscordConfig } from "../../../../Modules/DiscordModule/DiscordConfig";
 import { PrivateBot } from "../../../../Modules/DiscordModule/PrivateBot";
 
 export default function listener(): void {

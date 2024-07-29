@@ -1,9 +1,9 @@
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { DiscordRequestResult } from "../Types/DiscordRequestResult";
 import { DiscordRequest } from "./DiscordRequest";
-import { NetworkUtilities } from "../../../Utilities/NetworkUtilities";
+import { NetworkUtils } from "../../../Utilities/NetworkUtilities";
 import { DataQuranItem } from "../../DatabaseModule/Types/DataQuran";
-import { SystemUtilities } from "../../../Utilities/SystemUtils";
+import { SystemUtils } from "../../../Utilities/SystemUtils";
 import { DiscordUtilities } from "./DiscordUtilities";
 
 export class DiscordQuranRequest extends DiscordRequest {
@@ -44,7 +44,7 @@ export class DiscordQuranRequest extends DiscordRequest {
       ? `search/?q=${query}&highlight=true&normalize_god_capitalization=true&ignore_word_order=${this.getStringInput("strict-search") === "yes" ? "false" : "true"}`
       : `${query}?normalize_god_capitalization=true`;
 
-    const request = await NetworkUtilities.GET_INTERNAL<DataQuranItem[]>(
+    const request = await NetworkUtils.GET_INTERNAL<DataQuranItem[]>(
       `https://api.wikisubmission.org`,
       `/quran/${path}`,
     );
@@ -56,7 +56,7 @@ export class DiscordQuranRequest extends DiscordRequest {
 
       // Multi-page? Cache interaction.
       if (description.length > 1) {
-        const db = await SystemUtilities.getSupabaseClient();
+        const db = await SystemUtils.getSupabaseClient();
         await db.from("GlobalCache").insert({
           key: this.interaction.id,
           value: JSON.stringify(

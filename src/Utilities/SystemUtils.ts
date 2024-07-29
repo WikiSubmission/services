@@ -3,12 +3,12 @@ import { PromiseWithChild, exec } from "child_process";
 import { WikiEvents } from "../Modules/LogsModule";
 import { EnvironmentVariables } from "../Vars/EnvironmentVariables";
 import { WikiCache } from "../Modules/CachingModule";
-import util from "util";
 import { TimeStrings } from "../Vars/TimeStrings";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { S3Client } from "@aws-sdk/client-s3";
+import util from "util";
 
-export class SystemUtilities {
+export class SystemUtils {
   static getEnv(
     key: EnvironmentVariables,
     doNotCrashIfNotFound?: boolean,
@@ -27,7 +27,7 @@ export class SystemUtilities {
     secret: EnvironmentVariables,
     throwErrorOnFail?: boolean,
   ): Promise<string> {
-    return await SystemUtilities.cachedFunction(
+    return await SystemUtils.cachedFunction(
       `Env:${secret}`,
       "5m",
       async () => {
@@ -69,12 +69,12 @@ export class SystemUtilities {
       async () => {
         return await func();
       },
-      SystemUtilities.timeToMs(duration),
+      SystemUtils.timeToMs(duration),
     );
   }
 
   static async getSupabaseClient(): Promise<SupabaseClient> {
-    return await SystemUtilities.cachedFunction(
+    return await SystemUtils.cachedFunction(
       `SupabaseClient`,
       "30m",
       async () => {
@@ -86,8 +86,8 @@ export class SystemUtilities {
     );
   }
 
-  static async getAWSClient(): Promise<S3Client> {
-    return await SystemUtilities.cachedFunction(`S3Client`, "30m", async () => {
+  static async getS3Client(): Promise<S3Client> {
+    return await SystemUtils.cachedFunction(`S3Client`, "30m", async () => {
       const accessKeyId = await this.getEnvFromSupabase(
         "DIGITALOCEAN_SPACES_ACCESS_KEY_ID",
       );
