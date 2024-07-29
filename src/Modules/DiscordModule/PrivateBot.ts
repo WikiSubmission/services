@@ -32,8 +32,8 @@ export class PrivateBot extends DiscordHelpers {
       status: "online",
       activities: [
         {
-          name: "Righteousness",
-          type: 5,
+          name: "The Submission Server",
+          type: 3,
         },
       ],
     },
