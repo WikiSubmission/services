@@ -26,7 +26,8 @@ export default function action(): void {
         };
 
         // Loop over every guild member
-        for (const [id, member] of guild?.members.cache || []) {
+        const guildMembers = await guild?.members.fetch();
+        for (const [id, member] of guildMembers || []) {
           // Check if user has 'new member' role
           if (member.roles.cache.has(knownGuild.keyRoles.newMember)) {
             stats.newMembers++;
