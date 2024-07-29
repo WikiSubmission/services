@@ -96,10 +96,10 @@ export class S3Utils {
 
       return result.$metadata.httpStatusCode === 201
         ? {
-          ...result,
-          Key: key,
-          Extension: SystemUtilities.getFileExtension(key),
-        }
+            ...result,
+            Key: key,
+            Extension: SystemUtilities.getFileExtension(key),
+          }
         : null;
     } catch {
       return null;
@@ -119,30 +119,34 @@ export class S3Utils {
     key: string,
     additionalParams?: ListObjectsV2CommandInput,
   ): Promise<string | null> {
-    return SystemUtilities.cachedFunction(`S3:LookupObjectKey`, "1s", async () => {
-      const { Contents } = await this.listObjects({
-        Prefix: `${key.split("/")[0]}`,
-        Bucket: "wikisubmission",
-        ...additionalParams,
-      });
+    return SystemUtilities.cachedFunction(
+      `S3:LookupObjectKey`,
+      "1s",
+      async () => {
+        const { Contents } = await this.listObjects({
+          Prefix: `${key.split("/")[0]}`,
+          Bucket: "wikisubmission",
+          ...additionalParams,
+        });
 
-      const filteredKeys = Contents?.map((obj) => obj.Key).filter((k) =>
-        k?.includes(key),
-      );
+        const filteredKeys = Contents?.map((obj) => obj.Key).filter((k) =>
+          k?.includes(key),
+        );
 
-      const sortedKeys = filteredKeys?.sort((a, b) => {
-        if (a && b) {
-          if (a.length !== b.length) {
-            return a.length - b.length;
+        const sortedKeys = filteredKeys?.sort((a, b) => {
+          if (a && b) {
+            if (a.length !== b.length) {
+              return a.length - b.length;
+            }
+            return a.localeCompare(b);
           }
-          return a.localeCompare(b);
-        }
-        return 0;
-      });
+          return 0;
+        });
 
-      const resolvedKey = sortedKeys?.[0];
+        const resolvedKey = sortedKeys?.[0];
 
-      return resolvedKey || null;
-    })
+        return resolvedKey || null;
+      },
+    );
   }
 }

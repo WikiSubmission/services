@@ -2,7 +2,7 @@ import { Guild, MessageCreateOptions, MessagePayload } from "discord.js";
 import { DiscordUtilities } from "./DiscordUtilities";
 import Bottleneck from "bottleneck";
 import { DiscordModeratedGuild } from "../Types/ModeratedGuild";
-import { DiscordBot } from "..";
+import { PrivateBot } from "../PrivateBot";
 
 type AlertDestination =
   | "STAFF-LOG"
@@ -41,7 +41,7 @@ export class DiscordAlert {
       try {
         await channel?.send(data);
       } catch (error) {
-        DiscordBot.shared.logError(
+        PrivateBot.shared.logError(
           error,
           `@ DiscordAlert (payload: ${data.toString()})`,
         );

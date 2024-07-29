@@ -1,5 +1,4 @@
 import { EmbedBuilder } from "discord.js";
-import { DiscordBot } from "../../../Modules/DiscordModule";
 import { DiscordConfig } from "../../../Modules/DiscordModule/Vars/DiscordConfig";
 import { DataQuranItem } from "../../../Modules/DatabaseModule/Types/DataQuran";
 import { DiscordUtilities } from "../../../Modules/DiscordModule/Utilities/DiscordUtilities";

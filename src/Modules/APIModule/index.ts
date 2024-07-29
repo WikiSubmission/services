@@ -230,7 +230,9 @@ export class WikiAPI {
             const cdnResponse = await fetch(redirectResponse.url);
 
             if (!cdnResponse.ok) {
-              throw new Error(`Error fetching resource: ${cdnResponse.statusText}`);
+              throw new Error(
+                `Error fetching resource: ${cdnResponse.statusText}`,
+              );
             }
 
             res.status(cdnResponse.status);
@@ -244,14 +246,17 @@ export class WikiAPI {
               const reader = body.getReader();
               const stream = new Readable({
                 read() {
-                  reader.read().then(({ done, value }) => {
-                    if (done) {
-                      this.push(null);
-                    } else {
-                      this.push(value);
-                    }
-                  }).catch(err => this.destroy(err));
-                }
+                  reader
+                    .read()
+                    .then(({ done, value }) => {
+                      if (done) {
+                        this.push(null);
+                      } else {
+                        this.push(value);
+                      }
+                    })
+                    .catch((err) => this.destroy(err));
+                },
               });
 
               // @ts-ignore
@@ -342,8 +347,8 @@ export class WikiAPI {
         const endpoints =
           typeof this.service.config.api.endpoints === "string"
             ? await FileUtils.getDefaultExportsFromDirectory<APIEndpoint>(
-              `/${this.service.config.name}/Routes`,
-            )
+                `/${this.service.config.name}/Routes`,
+              )
             : this.service.config.api.endpoints;
 
         // Ensure broader / catch-all endpoints are lined up last as Express relies on this order to route requests.
@@ -375,9 +380,9 @@ export class WikiAPI {
             req.originalUrl.split("?")?.length > 1
               ? req.originalUrl.split("?")[1]
               : "";
-  
+
           const redirectUrl = `${endpoint.route}${queryString ? "?" + queryString : ""}`;
-          
+
           res.status(301).redirect(redirectUrl);
         });
       }

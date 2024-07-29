@@ -1,7 +1,7 @@
 import { loadEnvironment } from "../../Entrypoint/loadEnvironment";
 import { preLaunch } from "../../Entrypoint/preLaunch";
 import { APIJSONResponse } from "../../Modules/APIModule/Types/APIResponse";
-import { DiscordBot } from "../../Modules/DiscordModule";
+import { DiscordBots } from "../../Modules/DiscordModule";
 import { WikiService } from "../../Modules/ServiceModule";
 
 /**
@@ -16,7 +16,7 @@ import { WikiService } from "../../Modules/ServiceModule";
   await WikiService.create({
     name: "Discord",
     customService: async () => {
-      await DiscordBot.shared.start();
+      await DiscordBots.shared.start();
     },
     api: {
       name: "DiscordAPI",

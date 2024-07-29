@@ -13,9 +13,9 @@ import { DiscordUtilities } from "./DiscordUtilities";
 import { DateUtilities } from "../../../Utilities/DateUtils";
 import { DiscordDBMember } from "../Types/DiscordDBMember";
 import { DiscordModeratedGuild } from "../Types/ModeratedGuild";
-import { DiscordBot } from "..";
 import { SystemUtilities } from "../../../Utilities/SystemUtils";
 import { DiscordAlert } from "./DiscordAlertManager";
+import { PrivateBot } from "../PrivateBot";
 
 export class DiscordMemberManager {
   public identifier:
@@ -96,7 +96,7 @@ export class DiscordMemberManager {
     if (!roles || !this.member || !this.moderatedGuild) return "ERROR";
 
     const roleIds = Array.isArray(roles) ? roles : [roles];
-    const guild = DiscordBot.shared.client.guilds.cache.get(
+    const guild = PrivateBot.shared.client.guilds.cache.get(
       this.moderatedGuild.id,
     );
 
@@ -165,7 +165,7 @@ export class DiscordMemberManager {
                   ? [
                       {
                         name: "Replaced",
-                        value: `– ${rolesRemoved.map((role) => `<@&${DiscordBot.shared.client.guilds.cache.find((g) => g.id === this.moderatedGuild?.id)?.roles.cache.find((r) => r.name === role || r.id === role)?.id}>`).join(" ")}`,
+                        value: `– ${rolesRemoved.map((role) => `<@&${PrivateBot.shared.client.guilds.cache.find((g) => g.id === this.moderatedGuild?.id)?.roles.cache.find((r) => r.name === role || r.id === role)?.id}>`).join(" ")}`,
                       },
                     ]
                   : []),
@@ -179,7 +179,7 @@ export class DiscordMemberManager {
       }
       return "ADDED";
     } catch (error) {
-      DiscordBot.shared.logError(error, "@ DiscordMemberManager, addRole");
+      PrivateBot.shared.logError(error, "@ DiscordMemberManager, addRole");
       return "ERROR";
     }
   }
@@ -197,7 +197,7 @@ export class DiscordMemberManager {
 
     const roles = Array.isArray(role) ? role : [role];
     const removedRoles: string[] = [];
-    const guild = DiscordBot.shared.client.guilds.cache.get(
+    const guild = PrivateBot.shared.client.guilds.cache.get(
       this.moderatedGuild.id,
     );
 
@@ -221,7 +221,7 @@ export class DiscordMemberManager {
         await this.member.roles.remove(roleToRemove.id, reason);
         removedRoles.push(roleToRemove.id);
       } catch (error) {
-        DiscordBot.shared.logError(error, "@ DiscordMemberManager/removeRole");
+        PrivateBot.shared.logError(error, "@ DiscordMemberManager/removeRole");
         return "ERROR";
       }
     }
@@ -559,7 +559,7 @@ export class DiscordMemberManager {
         return new Error(`Couldn't find that user`);
       }
     } catch (error: any) {
-      DiscordBot.shared.logError(error, "@ DiscordMemberManager/ban");
+      PrivateBot.shared.logError(error, "@ DiscordMemberManager/ban");
       return new Error(`Failed to ban user: ${error?.message || "-"}`);
     }
   }
@@ -585,7 +585,7 @@ export class DiscordMemberManager {
     if (!resolvedExecutor.verify("MOD_AND_ABOVE"))
       return new Error(`Unauthorized`);
 
-    const guild = DiscordBot.shared.client.guilds.cache.get(resolvedGuild.id);
+    const guild = PrivateBot.shared.client.guilds.cache.get(resolvedGuild.id);
 
     if (!guild) return new Error(`Unable to find guild`);
 
@@ -597,7 +597,7 @@ export class DiscordMemberManager {
         return new Error(`Unable to find a banned user with ID of "${userId}"`);
       }
     } catch (error: any) {
-      DiscordBot.shared.logError(error, "@ DiscordMemberManager/unban");
+      PrivateBot.shared.logError(error, "@ DiscordMemberManager/unban");
       return new Error(
         `Failed to unban user: ${error?.message || "-"}. Try doing it from server settings (bans section; paste their ID there).`,
       );
@@ -628,7 +628,7 @@ export class DiscordMemberManager {
     // Resolve member via user ID.
     if (typeof this.identifier === "string") {
       this.member = await (
-        await DiscordBot.shared.client.guilds.fetch(guild.id)
+        await PrivateBot.shared.client.guilds.fetch(guild.id)
       ).members.fetch(this.identifier);
     }
 
@@ -637,7 +637,7 @@ export class DiscordMemberManager {
       this.identifier instanceof User ||
       this.identifier instanceof ClientUser
     ) {
-      const guildData = DiscordBot.shared.client.guilds.cache.find(
+      const guildData = PrivateBot.shared.client.guilds.cache.find(
         (g) => g.id === guild.id,
       );
 
@@ -655,7 +655,7 @@ export class DiscordMemberManager {
 
     // Resolve member via APIInteractionGuildMember.
     else {
-      const guildData = DiscordBot.shared.client.guilds.cache.find(
+      const guildData = PrivateBot.shared.client.guilds.cache.find(
         (g) => g.id === guild.id,
       );
 

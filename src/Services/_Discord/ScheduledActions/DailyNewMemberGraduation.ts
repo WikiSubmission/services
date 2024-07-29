@@ -1,8 +1,8 @@
 import { EmbedBuilder, GuildMember } from "discord.js";
 import { DiscordConfig } from "../../../Modules/DiscordModule/Vars/DiscordConfig";
 import { DiscordScheduledActions } from "../../../Modules/DiscordModule/Utilities/DiscordScheduledActions";
-import { DiscordBot } from "../../../Modules/DiscordModule";
 import { DiscordAlert } from "../../../Modules/DiscordModule/Utilities/DiscordAlertManager";
+import { PrivateBot } from "../../../Modules/DiscordModule/PrivateBot";
 
 export default function action(): void {
   DiscordScheduledActions.create({
@@ -12,7 +12,7 @@ export default function action(): void {
     interval: "EVERY_DAY",
     action: async () => {
       for (const knownGuild of DiscordConfig.knownGuilds) {
-        const guild = DiscordBot.shared.client.guilds.cache.find(
+        const guild = PrivateBot.shared.client.guilds.cache.find(
           (g) => g.id === knownGuild.id,
         );
 

@@ -12,11 +12,11 @@ import {
 } from "discord.js";
 import { DiscordModeratedGuild } from "../Types/ModeratedGuild";
 import { DiscordConfig } from "../Vars/DiscordConfig";
-import { DiscordBot } from "..";
 import { WikiEvents } from "../../LogsModule";
 import { WikiSlashCommand } from "../Types/WikiSlashCommand";
 import { OriginalSlashCommand } from "../Types/OriginalSlashCommand";
 import { SerializedInteraction } from "../Types/SerializedInteraction";
+import { PrivateBot } from "../PrivateBot";
 
 export class DiscordUtilities {
   static serializedInteraction(interaction: any): SerializedInteraction {
@@ -60,7 +60,7 @@ export class DiscordUtilities {
 
       if (!moderatedGuild) return null;
 
-      const guildData = DiscordBot.shared.client.guilds.cache.find(
+      const guildData = PrivateBot.shared.client.guilds.cache.find(
         (g) => g.id === moderatedGuild.id,
       );
 
@@ -85,7 +85,7 @@ export class DiscordUtilities {
 
     try {
       const result = (
-        await DiscordBot.shared.client.guilds.fetch(guildId)
+        await PrivateBot.shared.client.guilds.fetch(guildId)
       ).members.fetch(memberId);
 
       return result;
@@ -102,7 +102,7 @@ export class DiscordUtilities {
     if (!channelId || !guildId) return null;
 
     try {
-      const guild = await DiscordBot.shared.client.guilds.fetch(guildId);
+      const guild = await PrivateBot.shared.client.guilds.fetch(guildId);
       const channel = guild.channels.cache?.get(channelId);
 
       if (channel && channel.type === 0) {
@@ -146,7 +146,7 @@ export class DiscordUtilities {
         ? new Set(member.roles.cache.map((r) => r.id))
         : new Set(member.roles);
 
-    if (member?.user.id === DiscordBot.shared.client.user?.id) return true;
+    if (member?.user.id === PrivateBot.shared.client.user?.id) return true;
 
     let requiredRoles: Set<string> = new Set();
 

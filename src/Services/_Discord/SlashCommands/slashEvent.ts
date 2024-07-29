@@ -8,8 +8,8 @@ import { WikiSlashCommand } from "../../../Modules/DiscordModule/Types/WikiSlash
 import { DiscordConfig } from "../../../Modules/DiscordModule/Vars/DiscordConfig";
 import { DiscordUtilities } from "../../../Modules/DiscordModule/Utilities/DiscordUtilities";
 import { DateUtilities } from "../../../Utilities/DateUtils";
-import { DiscordBot } from "../../../Modules/DiscordModule";
 import { WikiEvents } from "../../../Modules/LogsModule";
+import { PrivateBot } from "../../../Modules/DiscordModule/PrivateBot";
 
 export default function command(): WikiSlashCommand {
   return {
@@ -62,7 +62,7 @@ export default function command(): WikiSlashCommand {
             method: "post",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bot ${(await DiscordBot.shared.getCredentials()).token}`,
+              Authorization: `Bot ${(await PrivateBot.shared.getPrivateBotCredentials()).token}`,
             },
             body: JSON.stringify({
               channel_id: channel,

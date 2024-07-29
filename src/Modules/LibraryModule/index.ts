@@ -16,7 +16,7 @@ import { WikiEvents } from "../LogsModule";
  */
 export interface LibraryConfig {
   provider: {
-    identifier: 'DIGITALOCEAN_SPACES' // TODO: add other file-storage providers
+    identifier: "DIGITALOCEAN_SPACES"; // TODO: add other file-storage providers
     primaryCDN: string;
     backupCDN?: string;
   };
@@ -57,14 +57,17 @@ export class WikiLibrary {
 
     // Go through each folder and create a corresponding endpoint.
     if (this.service.config.library) {
-      if (this.service.config.library.provider.identifier === "DIGITALOCEAN_SPACES") {
+      if (
+        this.service.config.library.provider.identifier ===
+        "DIGITALOCEAN_SPACES"
+      ) {
         for (const folder of this.service.config.library.foldersToExpose) {
           endpoints.push({
             method: "get",
             route: `${this.service.config.library.apiBasePath}/${folder}/:query`,
             handler: async (req, res) => {
               const query = req.params.query?.toString();
-              
+
               if (!query) {
                 return new APIJSONResponse({
                   success: false,
@@ -78,7 +81,9 @@ export class WikiLibrary {
               }
 
               // Resolve the key of the object (exact file path).
-              const objectKey = await S3Utils.lookupObjectKey(`${folder}/${query}`);
+              const objectKey = await S3Utils.lookupObjectKey(
+                `${folder}/${query}`,
+              );
 
               if (!objectKey) {
                 return new APIJSONResponse({
@@ -95,30 +100,40 @@ export class WikiLibrary {
               const backupUrl = `${this.service!.config.library!.provider.backupCDN}/${objectKey}`;
 
               try {
-                const primaryCDNReachable = await fetch(primaryUrl, { method: 'HEAD' });
+                const primaryCDNReachable = await fetch(primaryUrl, {
+                  method: "HEAD",
+                });
                 if (primaryCDNReachable.ok) {
                   return new APIRedirectResponse({
                     url: primaryUrl,
-                    rewrite: true
+                    rewrite: true,
                   });
                 }
               } catch (error) {
-                WikiEvents.emit("api:error", `Primary CDN unreachable (${backupUrl})`);
+                WikiEvents.emit(
+                  "api:error",
+                  `Primary CDN unreachable (${backupUrl})`,
+                );
                 if (this.service!.config.library!.provider.backupCDN) {
-                  const backupCDNReachable = await fetch(backupUrl, { method: 'HEAD' });
+                  const backupCDNReachable = await fetch(backupUrl, {
+                    method: "HEAD",
+                  });
                   if (backupCDNReachable) {
                     return new APIRedirectResponse({
                       url: backupUrl,
-                      rewrite: true
+                      rewrite: true,
                     });
                   } else {
-                    WikiEvents.emit("api:error", `Backup CDN unreachable (${backupUrl})`);
+                    WikiEvents.emit(
+                      "api:error",
+                      `Backup CDN unreachable (${backupUrl})`,
+                    );
                   }
                 }
               }
 
               return new APIRedirectResponse({
-                url: "https://wikisubmission.org/resources"
+                url: "https://wikisubmission.org/resources",
               });
             },
           });
