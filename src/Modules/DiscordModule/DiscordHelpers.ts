@@ -87,16 +87,13 @@ export class DiscordHelpers {
       "DiscordCredentials",
       "1h",
       async () => {
+        // Since it's a private bot anyway, we will use the same token / client ID.
         return {
           token: await SystemUtilities.getEnvFromSupabase(
-            process.env.NODE_ENV === "production"
-              ? "DISCORD_SUBMISSIONMOD_TOKEN"
-              : "DISCORD_SUBMISSIONMOD_TOKEN",
+            "DISCORD_SUBMISSIONMOD_TOKEN",
           ),
           clientId: await SystemUtilities.getEnvFromSupabase(
-            process.env.NODE_ENV === "production"
-              ? "DISCORD_SUBMISSIONMOD_CLIENT_ID"
-              : "DISCORD_SUBMISSIONMOD_CLIENT_ID",
+            "DISCORD_SUBMISSIONMOD_CLIENT_ID",
           ),
         };
       },
