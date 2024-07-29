@@ -67,10 +67,6 @@ export class PrivateBot extends DiscordHelpers {
 
     const rest = new REST().setToken(token);
 
-    await rest.put(Routes.applicationCommands(clientId), {
-      body: [],
-    });
-
     const guildCommands = new Map<string, WikiSlashCommand[]>();
     for (const command of privateCommands) {
       for (const guild of command.guildSpecific || []) {
