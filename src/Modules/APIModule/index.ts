@@ -16,7 +16,6 @@ import { FileUtils } from "../../Utilities/FileUtils";
 import { HostAddress } from "../../Vars/Host";
 import { Readable } from "stream";
 import helmet from "helmet";
-import proxy from "express-http-proxy";
 import * as http from "http";
 
 /**
