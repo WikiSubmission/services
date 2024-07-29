@@ -158,6 +158,7 @@ export class DiscordUtilities {
             .flatMap((guild) => guild.keyRoles)
             .flatMap((keyRoles) => [
               keyRoles?.verified,
+              keyRoles?.insider,
               keyRoles?.moderator,
               keyRoles?.admin,
               keyRoles?.developer,
