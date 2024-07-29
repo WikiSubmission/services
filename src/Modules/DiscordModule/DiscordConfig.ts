@@ -12,7 +12,7 @@ export class DiscordConfig {
   static knownGuilds: DiscordModeratedGuild[] = [
     {
       id: "1080271049377202177",
-      name: "WikiSubmission Dev Team",
+      name: "WikiSubmission Developers",
       keyChannels: {
         adminChat: "1225605572926247044",
         modChat: "1225605613225246800",
