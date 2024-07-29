@@ -88,7 +88,7 @@ export class WikiLibrary {
               if (!objectKey) {
                 return new APIJSONResponse({
                   success: false,
-                  http_status_code: 400,
+                  http_status_code: 204,
                   error: {
                     name: "Bad Request",
                     description: `Could not find a file named '${query}' in '${this.service?.config.library?.bucket}/${folder}'. Please double check the URL.`,
