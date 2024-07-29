@@ -15,7 +15,7 @@ import { DiscordUtilities } from "./Utilities/DiscordUtilities";
 export class DiscordHelpers {
   /**
    * @method attachListeners
-   * @description Executes default exports in /_Discord/Listener folder (which each should call the addEventListener() on the shared instance of this class)
+   * @description Executes default exports in /_Discord/EventListeners folder (which each should call the addEventListener() on the shared instance of this class)
    */
   async attachEventListeners() {
     EventEmitter.defaultMaxListeners = 20;
