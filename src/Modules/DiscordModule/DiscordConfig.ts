@@ -8,6 +8,7 @@ export class DiscordConfig {
     "911267873303953459",
     "734316604828942372",
     "346413770089824256",
+    "1252770657717059587"
   ];
   static knownGuilds: DiscordModeratedGuild[] = [
     {
