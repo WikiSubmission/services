@@ -3,21 +3,26 @@
 import { WikiService } from "../ServiceModule";
 import { APIEndpoint } from "../APIModule/Types/APIEndpoint";
 import {
-  APIFileResponse,
   APIJSONResponse,
+  APIRedirectResponse,
 } from "../APIModule/Types/APIResponse";
 import { S3Utils } from "../../Utilities/S3Utils";
-import { SystemUtilities } from "../../Utilities/SystemUtils";
 import { WikiAPI } from "../APIModule";
+import { WikiEvents } from "../LogsModule";
 
 /**
  * @interface LibraryConfig
  * @description A simple interface to define a 'library' service that expose media/files from a storage provider, using folder paths (e.g. /folder/subfolder/file.pdf) as endpoints
  */
 export interface LibraryConfig {
-  provider: "DIGITALOCEAN_SPACES"; // TODO: add other file-storage providers to serve as a backup (gcloud, azure)
+  provider: {
+    identifier: 'DIGITALOCEAN_SPACES' // TODO: add other file-storage providers
+    primaryCDN: string;
+    backupCDN?: string;
+  };
   bucket: "wikisubmission" | string;
-  keyFolders: string[];
+  apiBasePath: `/${string}`;
+  foldersToExpose: string[];
   port: number;
 }
 
@@ -52,15 +57,14 @@ export class WikiLibrary {
 
     // Go through each folder and create a corresponding endpoint.
     if (this.service.config.library) {
-      if (this.service.config.library.provider === "DIGITALOCEAN_SPACES") {
-        for (const folder of this.service.config.library.keyFolders) {
+      if (this.service.config.library.provider.identifier === "DIGITALOCEAN_SPACES") {
+        for (const folder of this.service.config.library.foldersToExpose) {
           endpoints.push({
             method: "get",
-            route: `/library/${folder}/:query`,
-            alternateRoutes: [`/${folder}/:query`],
+            route: `${this.service.config.library.apiBasePath}/${folder}/:query`,
             handler: async (req, res) => {
               const query = req.params.query?.toString();
-
+              
               if (!query) {
                 return new APIJSONResponse({
                   success: false,
@@ -73,30 +77,48 @@ export class WikiLibrary {
                 });
               }
 
-              const request = await S3Utils.lookupObject(`${folder}/${query}`);
+              // Resolve the key of the object (exact file path).
+              const objectKey = await S3Utils.lookupObjectKey(`${folder}/${query}`);
 
-              if (!request) {
+              if (!objectKey) {
                 return new APIJSONResponse({
                   success: false,
                   http_status_code: 400,
                   error: {
                     name: "Bad Request",
                     description: `Could not find a file named '${query}' in '${this.service?.config.library?.bucket}/${folder}'. Please double check the URL.`,
-                    fault: "client",
                   },
                 });
               }
 
-              const { key, extension } = SystemUtilities.getKeyAndExtension(
-                request?.Key,
-              );
+              const primaryUrl = `${this.service!.config.library!.provider.primaryCDN}/${objectKey}`;
+              const backupUrl = `${this.service!.config.library!.provider.backupCDN}/${objectKey}`;
 
-              return new APIFileResponse({
-                name: key || "404",
-                type: request?.ContentType || "application/octet-stream",
-                body: request?.Body,
-                extension: request?.Extension || extension,
-                size: request?.ContentLength || 0,
+              try {
+                const primaryCDNReachable = await fetch(primaryUrl, { method: 'HEAD' });
+                if (primaryCDNReachable.ok) {
+                  return new APIRedirectResponse({
+                    url: primaryUrl,
+                    rewrite: true
+                  });
+                }
+              } catch (error) {
+                WikiEvents.emit("api:error", `Primary CDN unreachable (${backupUrl})`);
+                if (this.service!.config.library!.provider.backupCDN) {
+                  const backupCDNReachable = await fetch(backupUrl, { method: 'HEAD' });
+                  if (backupCDNReachable) {
+                    return new APIRedirectResponse({
+                      url: backupUrl,
+                      rewrite: true
+                    });
+                  } else {
+                    WikiEvents.emit("api:error", `Backup CDN unreachable (${backupUrl})`);
+                  }
+                }
+              }
+
+              return new APIRedirectResponse({
+                url: "https://wikisubmission.org/resources"
               });
             },
           });

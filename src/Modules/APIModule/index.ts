@@ -16,6 +16,7 @@ import { FileUtils } from "../../Utilities/FileUtils";
 import { HostAddress } from "../../Vars/Host";
 import { Readable } from "stream";
 import helmet from "helmet";
+import proxy from "express-http-proxy";
 import * as http from "http";
 
 /**
@@ -224,6 +225,47 @@ export class WikiAPI {
         });
       } else if (response instanceof APIRedirectResponse) {
         const redirectResponse = response;
+        // If rewrite is true, fetch the resource and pipe stream to response (maintaining the same URL)
+        if (redirectResponse.rewrite) {
+          try {
+            const cdnResponse = await fetch(redirectResponse.url);
+
+            if (!cdnResponse.ok) {
+              throw new Error(`Error fetching resource: ${cdnResponse.statusText}`);
+            }
+
+            res.status(cdnResponse.status);
+
+            cdnResponse.headers.forEach((value, key) => {
+              res.setHeader(key, value);
+            });
+
+            const body = cdnResponse.body;
+            if (body) {
+              const reader = body.getReader();
+              const stream = new Readable({
+                read() {
+                  reader.read().then(({ done, value }) => {
+                    if (done) {
+                      this.push(null);
+                    } else {
+                      this.push(value);
+                    }
+                  }).catch(err => this.destroy(err));
+                }
+              });
+
+              // @ts-ignore
+              stream.pipe(res);
+            } else {
+              const text = await cdnResponse.text();
+              res.send(text);
+            }
+            return;
+          } catch (err) {
+            console.error(err);
+          }
+        }
         return res.status(301).redirect(redirectResponse.url);
       } else if (response instanceof APIFileResponse) {
         const fileResponse = response;
@@ -301,8 +343,8 @@ export class WikiAPI {
         const endpoints =
           typeof this.service.config.api.endpoints === "string"
             ? await FileUtils.getDefaultExportsFromDirectory<APIEndpoint>(
-                `/${this.service.config.name}/Routes`,
-              )
+              `/${this.service.config.name}/Routes`,
+            )
             : this.service.config.api.endpoints;
 
         // Ensure broader / catch-all endpoints are lined up last as Express relies on this order to route requests.
@@ -331,10 +373,12 @@ export class WikiAPI {
       for (const altRoute of endpoint.alternateRoutes || []) {
         this.server[endpoint.method](altRoute, (req, res) => {
           const queryString =
-            req.originalUrl.split("?")?.length > 0
-              ? req.originalUrl.split("?")[1] || endpoint.route
-              : endpoint.route;
+            req.originalUrl.split("?")?.length > 1
+              ? req.originalUrl.split("?")[1]
+              : "";
+  
           const redirectUrl = `${endpoint.route}${queryString ? "?" + queryString : ""}`;
+          
           res.status(301).redirect(redirectUrl);
         });
       }

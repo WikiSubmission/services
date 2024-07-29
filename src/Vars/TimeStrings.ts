@@ -1,4 +1,5 @@
 export type TimeStrings =
+  | "1s"
   | "3s"
   | "5s"
   | "10s"

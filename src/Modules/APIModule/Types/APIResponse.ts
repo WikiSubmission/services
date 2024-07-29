@@ -33,6 +33,7 @@ export interface APIFileResponseParams {
  */
 export interface APIRedirectResponseParams {
   url: string;
+  rewrite?: boolean;
 }
 
 /**
@@ -88,8 +89,10 @@ export class APIFileResponse implements APIFileResponseParams {
  */
 export class APIRedirectResponse implements APIRedirectResponseParams {
   url: string;
+  rewrite?: boolean;
 
   constructor(data: APIRedirectResponseParams) {
     this.url = data.url;
+    this.rewrite = data.rewrite || false;
   }
 }

@@ -6,7 +6,8 @@ export default async function service(): Promise<WikiService> {
     name: "Library",
     library: {
       bucket: "wikisubmission",
-      keyFolders: [
+      apiBasePath: "/library",
+      foldersToExpose: [
         "books",
         "sp",
         "research",
@@ -16,7 +17,11 @@ export default async function service(): Promise<WikiService> {
         "tmp",
       ],
       port: Ports.LibraryAPI,
-      provider: "DIGITALOCEAN_SPACES",
+      provider: {
+        identifier: "DIGITALOCEAN_SPACES",
+        primaryCDN: "https://wikisubmission.sfo2.cdn.digitaloceanspaces.com",
+        backupCDN: "https://wikisubmission.sfo2.digitaloceanspaces.com",
+      },
     },
   });
 }
