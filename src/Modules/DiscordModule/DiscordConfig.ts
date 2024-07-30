@@ -44,11 +44,13 @@ export class DiscordConfig {
       trustedRoles: ["1090377520626544671"],
       keyVoiceChannels: [
         {
+          name: "VC1",
           voice: "1144686042104995850",
           text: "1250562692347990047",
           wrongChannelAlerts: true,
         },
         {
+          name: "VC2",
           voice: "1080271050492878892",
           text: "1250562692347990047",
           wrongChannelAlerts: true,
@@ -133,30 +135,31 @@ export class DiscordConfig {
       keyVoiceChannels: [
         // VC1
         {
+          name: "VC1",
           voice: "911268076933230667",
           text: "915639051967676496",
           wrongChannelAlerts: true,
         },
         // VC2
         {
+          name: "VC2",
           voice: "915635168990081054",
           text: "915639080119849030",
           wrongChannelAlerts: true,
         },
         // VC3
-        { voice: "1075949658792284242", text: "1075986349607358544" },
+        { name: "VC3", voice: "1075949658792284242", text: "1075986349607358544" },
         // VC4
         {
+          name: "VC4",
           voice: "1082495437317083256",
           text: "1082833497812648046",
           silentLeave: true,
         },
         // VCLounge
-        { voice: "965278781071847474", text: "928350359309676614" },
+        { name: "VCLounge", voice: "965278781071847474", text: "928350359309676614" },
         // VCSubmitters
-        { voice: "985705908560617492", text: "985705731330293870" },
-        // VCTestimOlanlar
-        { voice: "1019177238526181466", text: "1025525849283362816" },
+        { name: "VCSubmitters",voice: "985705908560617492", text: "985705731330293870" },
       ],
       antiRaidProtectedChannels: [
         "915639051967676496",

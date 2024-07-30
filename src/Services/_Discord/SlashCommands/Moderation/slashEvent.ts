@@ -4,12 +4,12 @@ import {
   DiscordAPIError,
   EmbedBuilder,
 } from "discord.js";
-import { WikiSlashCommand } from "../../../Modules/DiscordModule/Types/WikiSlashCommand";
-import { DiscordConfig } from "../../../Modules/DiscordModule/DiscordConfig";
-import { DiscordUtilities } from "../../../Modules/DiscordModule/Utilities/DiscordUtilities";
-import { DateUtils } from "../../../Utilities/DateUtils";
-import { PrivateBot } from "../../../Modules/DiscordModule/PrivateBot";
-import { WikiLog } from "../../../Modules/LogsModule";
+import { WikiSlashCommand } from "../../../../Modules/DiscordModule/Types/WikiSlashCommand";
+import { DiscordConfig } from "../../../../Modules/DiscordModule/DiscordConfig";
+import { DiscordUtilities } from "../../../../Modules/DiscordModule/Utilities/DiscordUtilities";
+import { DateUtils } from "../../../../Utilities/DateUtils";
+import { PrivateBot } from "../../../../Modules/DiscordModule/PrivateBot";
+import { WikiLog } from "../../../../Modules/LogsModule";
 
 export default function command(): WikiSlashCommand {
   return {
@@ -24,7 +24,13 @@ export default function command(): WikiSlashCommand {
       {
         name: "channel",
         description: "Event channel? (choose a VOICE channel)",
-        type: "CHANNEL",
+        type: "STRING",
+        choices: [
+          ...DiscordConfig.knownGuilds.find(i => i.name === (process.env.NODE_ENV === "development" ? "WikiSubmission Developers" : "Submission"))!.keyVoiceChannels.map(v=>({
+            name: v.name,
+            value: v.voice
+          }))
+        ]
       },
       {
         name: "description",
