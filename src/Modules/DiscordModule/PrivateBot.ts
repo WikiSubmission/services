@@ -6,10 +6,10 @@ import {
   REST,
   Routes,
 } from "discord.js";
-import { WikiEvents } from "../LogsModule";
 import { WikiSlashCommand } from "./Types/WikiSlashCommand";
 import { DiscordUtilities } from "./Utilities/DiscordUtilities";
 import { DiscordHelpers } from "./DiscordHelpers";
+import { WikiLog } from "../LogsModule";
 
 export class PrivateBot extends DiscordHelpers {
   // Access class through shared instance.
@@ -46,8 +46,8 @@ export class PrivateBot extends DiscordHelpers {
   async login(): Promise<void> {
     const { token } = await this.getPrivateBotCredentials();
     await this.client.login(token);
-    WikiEvents.emit(
-      "discord:launch",
+    WikiLog.discord(
+      "launch",
       `Initialized client. Username: "${this.client.user?.username}". Guilds: ${this.client.guilds.cache.size}.`,
     );
   }
@@ -58,7 +58,7 @@ export class PrivateBot extends DiscordHelpers {
    */
   async registerSlashCommands() {
     if (process.argv.includes("no-sync")) {
-      WikiEvents.emit("discord:launch", "Skipping command sync as requested");
+      WikiLog.discord("launch", "Skipping command sync as requested");
       return;
     }
 
@@ -82,15 +82,12 @@ export class PrivateBot extends DiscordHelpers {
           body: DiscordUtilities.parseCommands(allocatedCommands),
         });
 
-        WikiEvents.emit(
-          "discord:launch",
+        WikiLog.discord(
+          "launch",
           `Synced GUILD commands (${allocatedCommands.length}) for "${this.client.guilds.cache.find((i) => i.id === guildId)?.name || "--"}" (${allocatedCommands.map((i) => `/${i.name}`).join(", ")})`,
         );
       } catch (error) {
-        WikiEvents.emit(
-          "discord:launch",
-          `No access to GUILD ${guildId} - skipping`,
-        );
+        WikiLog.discord("launch", `No access to GUILD ${guildId} - skipping`);
       }
     }
 
@@ -117,7 +114,7 @@ export class PrivateBot extends DiscordHelpers {
       try {
         await listener(...args);
       } catch (error) {
-        WikiEvents.emit("discord:error", error);
+        WikiLog.discordError(error, "Event Listener");
       }
     };
 

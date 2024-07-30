@@ -1,4 +1,4 @@
-import { WikiService } from "../../Modules/ServiceModule";
+import { WikiService } from "../../Modules/WikiServiceModule";
 import { Ports } from "../../Vars/Ports";
 
 export default async function service(): Promise<WikiService> {

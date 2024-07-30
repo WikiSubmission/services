@@ -1,154 +1,95 @@
-import { EventEmitter } from "eventemitter3";
-import {
-  ButtonInteraction,
-  ClientEvents,
-  CommandInteraction,
-  DiscordAPIError,
-} from "discord.js";
+import { ClientEvents, DiscordAPIError } from "discord.js";
 import {
   APIRequestEvent,
   APIResponseEvent,
 } from "../APIModule/Types/APIEmittedEvents";
-import { DiscordUtilities } from "../DiscordModule/Utilities/DiscordUtilities";
+import { DiscordAlert } from "../DiscordModule/Utilities/DiscordAlertManager";
+import { WebhookLog } from "./Webhook";
 
-type SystemEvents = "system:launch" | "system:error" | "system:critical-error";
-type ServiceEvents = "service:launch" | "service:error";
-type APIEvents = "api:launch" | "api:request" | "api:response" | "api:error";
-type DiscordEvents =
-  | "discord:launch"
-  | "discord:event"
-  | `discord:${keyof ClientEvents}`;
-type DatabaseEvents = "database:launch" | "database:error";
+type BaseLogTypes = "launch" | "error";
 
-type WikiEventTypes =
-  | SystemEvents
-  | ServiceEvents
-  | APIEvents
-  | DiscordEvents
-  | DatabaseEvents;
+export class WikiLog {
+  static system(message: string) {
+    const log = `[${WikiLog.timestamp()}] [SYSTEM] ${message}`;
 
-const events = new EventEmitter();
-
-class WikiSubmissionEvents {
-  constructor() {
-    this.systemLogs();
-    this.serviceLogs();
-    this.apiLogs();
-    this.databaseLogs();
-    this.discordLogs();
+    console.log(log);
   }
 
-  on(event: WikiEventTypes, listener: (...args: any[]) => void): void {
-    events.on(event, listener);
+  static systemError(error: Error | any, sourceHint?: string, crash?: boolean) {
+    const log = `[${this.timestamp}] [SYSTEM] [${error instanceof Error ? `[ERROR] ${error.name}: ${error.message}` : typeof Error === "object" ? JSON.stringify(error) : `${error}`}]${sourceHint ? ` (sourceHint: ${sourceHint})` : ``}${crash ? ` [CRASHING PROCESS]` : ``}`;
+
+    new WebhookLog(log, "DISCORD_WEBHOOK_SYSTEM_ERROR_LOG");
+
+    if (crash) {
+      throw new Error(log);
+    } else {
+      console.error(log);
+    }
   }
 
-  emit(event: WikiEventTypes, ...args: any[]): void {
-    events.emit(event, ...args);
+  static api(type: BaseLogTypes, message: string) {
+    const log = `[${this.timestamp()}] [API] [${type.toUpperCase()}] ${message}`;
+
+    console.log(log);
   }
 
-  once(event: WikiEventTypes, listener: (...args: any[]) => void): void {
-    events.once(event, listener);
+  static apiRequest(data: APIRequestEvent) {
+    const log = `[${this.timestamp()}] [API] [${data.id}] IN ---> ${data.method} ${data.route} @ ${data.host} (IP: ${data.ip})`;
+
+    console.log(log);
   }
 
-  private systemLogs() {
-    ["launch", "error"].forEach((event) => {
-      this.stringEvents(`system:${event}`);
-    });
+  static apiResponse(data: APIResponseEvent) {
+    const log = `${this.timestamp()}] [API] [${data.id}] OUT --> ${data.statusCode} (${data.ping})${data.error ? ` ${data.error.name} | ${Array.isArray(data.error.description) ? data.error.description.join(", ") : data.error.description} | Fault: ${data.error.fault} | Severity: ${data.error.severity}` : ""}`;
 
-    events.on("system:critical-error", (data?: string) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [CRITICAL ERROR] ${data}`,
-        );
-        throw new Error();
-      }
-    });
+    console.log(log);
   }
 
-  private serviceLogs() {
-    ["launch", "error"].forEach((event) => {
-      this.stringEvents(`service:${event}`);
-    });
+  static apiError(error: Error | any, sourceHint?: string, crash?: boolean) {
+    const log = `[${this.timestamp}] [API] [${error instanceof Error ? `[ERROR] ${error.name}: ${error.message}` : typeof Error === "object" ? JSON.stringify(error) : `${error}`}]${sourceHint ? ` (sourceHint: ${sourceHint})` : ``}${crash ? ` [CRASHING PROCESS]` : ``}`;
+
+    if (crash) {
+      throw new Error(log);
+    } else {
+      console.error(log);
+    }
+
+    new WebhookLog(log, "DISCORD_WEBHOOK_API_ERROR_LOG");
   }
 
-  private apiLogs() {
-    ["launch", "error"].forEach((event) => {
-      this.stringEvents(`api:${event}`);
-    });
+  static discord(type: BaseLogTypes, message: string) {
+    const log = `[${this.timestamp()}] [DISCORD] [${type.toUpperCase()}] ${message}`;
 
-    events.on("api:request", (data?: APIRequestEvent) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [API] [${data.id}] IN ---> ${data.method} ${data.route} @ ${data.host} (IP: ${data.ip})`,
-        );
-      }
-    });
-
-    events.on("api:response", (data?: APIResponseEvent) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [API] [${data.id}] OUT --> ${data.statusCode} (${data.ping})${data.error ? ` ${data.error.name} | ${Array.isArray(data.error.description) ? data.error.description.join(", ") : data.error.description} | Fault: ${data.error.fault} | Severity: ${data.error.severity}` : ""}`,
-        );
-      }
-    });
+    console.log(log);
   }
 
-  private databaseLogs() {
-    ["launch", "error"].forEach((event) => {
-      this.stringEvents(`database:${event}`);
+  static discordEvent(type: keyof ClientEvents, message: string) {
+    const log = `[${this.timestamp()}] [DISCORD] [${type.toUpperCase()}] ${message}`;
+
+    console.log(log);
+  }
+
+  static discordError(
+    error: string | DiscordAPIError | Error | any,
+    sourceHint?: string,
+  ) {
+    const log =
+      error instanceof DiscordAPIError
+        ? `[${this.timestamp()}] [DISCORD] [ERROR] ${error.name}: ${error.message} (${error.status})${sourceHint ? ` (${sourceHint})` : ""}`
+        : error instanceof Error
+          ? `[${this.timestamp()}] [DISCORD] [Internal Error] ${error.message}${sourceHint ? ` (sourceHint: ${sourceHint})` : ""}`
+          : typeof error === "string"
+            ? `[${this.timestamp()}] [DISCORD] [Internal Error] ${error}${sourceHint ? ` (sourceHint: ${sourceHint})` : ""}`
+            : `[${this.timestamp()}] [DISCORD] [Unknown Error] ${error?.message || "--"}${sourceHint ? ` sourceHint: (${sourceHint})` : ""}`;
+
+    console.log(log);
+
+    new DiscordAlert("1080271049377202177").send("DISCORD-ERRORLOG", {
+      content: `\`\`\`${log}\`\`\``,
     });
   }
 
-  private discordLogs() {
-    events.on("discord:launch", (data?: string) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [DISCORD] [LAUNCH] ${data}`,
-        );
-      }
-    });
-
-    events.on("discord:event", (data?: string) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [DISCORD] [EVENT] ${data}`,
-        );
-      }
-    });
-    events.on(
-      "discord:interactionCreate",
-      (data?: CommandInteraction | ButtonInteraction) => {
-        if (data) {
-          console.log(
-            `[${new Date().toISOString().split("T")[1]}] [DISCORD] [COMMAND] ${DiscordUtilities.parseInteraction(data) || "--"}`,
-          );
-        }
-      },
-    );
-    events.on(
-      "discord:error",
-      (error: DiscordAPIError | Error | any, sourceHint?: string) => {
-        console.log(
-          error instanceof DiscordAPIError
-            ? `[Error] ${error.name}: ${error.message} (${error.status})${sourceHint ? ` (${sourceHint})` : ""}`
-            : error instanceof Error
-              ? `[Internal Error] ${error.message}${sourceHint ? ` (${sourceHint})` : ""}`
-              : typeof error === "string"
-                ? `[Internal Error] ${error}${sourceHint ? ` (${sourceHint})` : ""}`
-                : `[Unknown Error] ${error?.message || "--"}${sourceHint ? ` (${sourceHint})` : ""}`,
-        );
-      },
-    );
-  }
-  private stringEvents(event: string) {
-    events.on(`${event}`, (data?: string) => {
-      if (data) {
-        console.log(
-          `[${new Date().toISOString().split("T")[1]}] [${event.split(":")[0].toUpperCase()}] ${data}`,
-        );
-      }
-    });
+  static timestamp() {
+    return `${new Date().toISOString().split("T")[1]}`;
   }
 }
-
-export const WikiEvents = new WikiSubmissionEvents();

@@ -33,7 +33,7 @@ export default function route(): APIEndpoint {
 
         return new APIJSONResponse({
           success: result.length > 0,
-          http_status_code: result.length > 0 ? 200 : 204,
+          http_status_code: 200,
           results: result.sort((a, b) => {
             const indexA = Number(a.verse_index);
             const indexB = Number(b.verse_index);
@@ -80,7 +80,7 @@ export default function route(): APIEndpoint {
 
           return new APIJSONResponse({
             success: result.length > 0,
-            http_status_code: result.length > 0 ? 200 : 204,
+            http_status_code: 200,
             results: result.sort((a, b) => {
               const indexA = Number(a.verse_index);
               const indexB = Number(b.verse_index);
@@ -148,7 +148,7 @@ export default function route(): APIEndpoint {
 
         return new APIJSONResponse({
           success: data.length > 0,
-          http_status_code: data.length > 0 ? 200 : 204,
+          http_status_code: 200,
           results: _data,
           ...(data.length === 0
             ? {

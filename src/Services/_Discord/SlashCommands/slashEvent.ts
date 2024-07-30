@@ -8,8 +8,8 @@ import { WikiSlashCommand } from "../../../Modules/DiscordModule/Types/WikiSlash
 import { DiscordConfig } from "../../../Modules/DiscordModule/DiscordConfig";
 import { DiscordUtilities } from "../../../Modules/DiscordModule/Utilities/DiscordUtilities";
 import { DateUtils } from "../../../Utilities/DateUtils";
-import { WikiEvents } from "../../../Modules/LogsModule";
 import { PrivateBot } from "../../../Modules/DiscordModule/PrivateBot";
+import { WikiLog } from "../../../Modules/LogsModule";
 
 export default function command(): WikiSlashCommand {
   return {
@@ -50,11 +50,7 @@ export default function command(): WikiSlashCommand {
         const description = interaction.options.get("description")?.value as
           | string
           | undefined;
-        const oneHourFromNow = DateUtils.getSpecificDate(
-          1,
-          "hour",
-          "future",
-        );
+        const oneHourFromNow = DateUtils.getSpecificDate(1, "hour", "future");
 
         const post = await fetch(
           `https://discord.com/api/v10/guilds/${interaction.guildId}/scheduled-events`,
@@ -125,7 +121,10 @@ export default function command(): WikiSlashCommand {
             await interaction.editReply({
               content: `\`Error creating event: ${error instanceof DiscordAPIError ? error.message : `Internal Server Error`}\``,
             });
-            WikiEvents.emit("discord:error", error);
+            WikiLog.discordError(
+              error,
+              "Services/_Discord/SlashCommands/slashEvent.ts",
+            );
           }
         } else {
           await interaction.editReply({

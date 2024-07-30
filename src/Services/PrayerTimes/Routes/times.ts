@@ -168,11 +168,10 @@ export default function route(): APIEndpoint {
         const latitude = encodeURIComponent(Response.coordinates.latitude);
         const longitude = encodeURIComponent(Response.coordinates.longitude);
 
-        const TimezoneData =
-          await NetworkUtils.GET<GoogleAPITimezoneResponse>(
-            `https://maps.googleapis.com/maps/api/timezone`,
-            `/json?language=en&location=${latitude},${longitude}&timestamp=${Math.floor(Date.now() / 1000)}&key=${ENV_GOOGLE_API_KEY}`,
-          );
+        const TimezoneData = await NetworkUtils.GET<GoogleAPITimezoneResponse>(
+          `https://maps.googleapis.com/maps/api/timezone`,
+          `/json?language=en&location=${latitude},${longitude}&timestamp=${Math.floor(Date.now() / 1000)}&key=${ENV_GOOGLE_API_KEY}`,
+        );
 
         if (!TimezoneData || TimezoneData.status !== "OK") {
           return new APIJSONResponse({

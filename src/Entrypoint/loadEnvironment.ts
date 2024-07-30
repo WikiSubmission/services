@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { WikiEvents } from "../Modules/LogsModule";
+import { WikiLog } from "../Modules/LogsModule";
 
 /**
  * @function loadEnvironment
@@ -8,14 +8,15 @@ import { WikiEvents } from "../Modules/LogsModule";
 export async function loadEnvironment() {
   dotenv.config();
   if (process.env.SUPABASE_URL && process.env.SUPABASE_API_KEY) {
-    WikiEvents.emit(
-      "system:launch",
+    WikiLog.system(
       `NODE_ENV: ${process.env.NODE_ENV || "development (default)"}`,
     );
-    WikiEvents.emit("system:launch", `Environment variables loaded\n`);
+    WikiLog.system(`Environment variables loaded\n`);
   } else {
-    throw new Error(
+    WikiLog.systemError(
       `Missing environment variables: SUPABASE_URL, SUPABASE_API_KEY`,
+      "Entrypoint",
+      true,
     );
   }
 }

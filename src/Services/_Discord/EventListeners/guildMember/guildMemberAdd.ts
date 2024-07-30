@@ -97,7 +97,7 @@ export default function listener(): void {
           await new DiscordAlert(resolvedMember.moderatedGuild).send(
             "JAIL-CHAT",
             {
-              content: `...you're back.`,
+              content: `You're back.`,
             },
           );
         } else {

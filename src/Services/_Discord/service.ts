@@ -2,7 +2,7 @@ import { loadEnvironment } from "../../Entrypoint/loadEnvironment";
 import { preLaunch } from "../../Entrypoint/preLaunch";
 import { APIJSONResponse } from "../../Modules/APIModule/Types/APIResponse";
 import { DiscordBots } from "../../Modules/DiscordModule";
-import { WikiService } from "../../Modules/ServiceModule";
+import { WikiService } from "../../Modules/WikiServiceModule";
 
 /**
  * This is the node entry point for the Discord service.

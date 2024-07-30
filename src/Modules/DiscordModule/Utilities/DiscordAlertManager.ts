@@ -12,19 +12,19 @@ type AlertDestination =
   | "JAIL-LOG"
   | "JAIL-CHAT"
   | "CHOOSE-ROLES"
-  | "DEV-EVENTLOG"
-  | "DEV-ERRORLOG";
+  | "DISCORD-EVENTLOG"
+  | "DISCORD-ERRORLOG"
+  | "API-ERRORLOG";
 
 export class DiscordAlert {
   private moderatedGuild: DiscordModeratedGuild | null;
-  private limiter: Bottleneck;
+  private static limiter = new Bottleneck({
+    minTime: 361 * 2,
+    maxConcurrent: 1,
+  });
 
   constructor(moderatedGuild: DiscordModeratedGuild | Guild | string | null) {
     this.moderatedGuild = DiscordUtilities.getModeratedGuild(moderatedGuild);
-    this.limiter = new Bottleneck({
-      minTime: 361 * 2,
-      maxConcurrent: 1,
-    });
   }
 
   async send(
@@ -37,7 +37,7 @@ export class DiscordAlert {
     const guildId = this.moderatedGuild.id;
     const channel = await DiscordUtilities.getChannelById(channelId, guildId);
 
-    await this.limiter.schedule(async () => {
+    await DiscordAlert.limiter.schedule(async () => {
       try {
         await channel?.send(data);
       } catch (error) {
@@ -67,9 +67,11 @@ export class DiscordAlert {
         return this.moderatedGuild.jail?.jailLogChannelId || null;
       case "JAIL-CHAT":
         return this.moderatedGuild.jail?.jailChannelId || null;
-      case "DEV-EVENTLOG":
+      case "DISCORD-EVENTLOG":
         return "1252774367381950494";
-      case "DEV-ERRORLOG":
+      case "DISCORD-ERRORLOG":
+        return "1267656504060809226";
+      case "API-ERRORLOG":
         return "1252774804013056022";
     }
   }

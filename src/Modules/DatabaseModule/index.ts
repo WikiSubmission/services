@@ -1,7 +1,6 @@
 import { FileUtils } from "../../Utilities/FileUtils";
 import { WikiCache } from "../CachingModule";
-import { WikiEvents } from "../LogsModule";
-import { WikiService } from "../ServiceModule";
+import { WikiService } from "../WikiServiceModule";
 import {
   RealtimePostgresChangesPayload,
   SupabaseClient,
@@ -11,6 +10,7 @@ import { DataQuranItem } from "./Types/DataQuran";
 import { DataMocMediaItem } from "./Types/DataMocMedia";
 import { DataNewslettersItem } from "./Types/DataNewsletters";
 import { SystemUtils } from "../../Utilities/SystemUtils";
+import { WikiLog } from "../LogsModule";
 
 export type WikiTablesTypesMap = {
   DataQuran: DataQuranItem[];
@@ -52,7 +52,7 @@ export class WikiDatabase {
 
     // Loop over every table.
     for (const table of this.service.config.databases || []) {
-      WikiEvents.emit("database:launch", `${table.tableName}...`);
+      WikiLog.system(`${table.tableName}...`);
 
       // Impose default sync options (memory cache, 30s refresh time)
       if (!table.sync) {
@@ -113,8 +113,7 @@ export class WikiDatabase {
             // Set now to lock in the next minute.
             await cache.set(`syncScheduled:${table}`, true);
 
-            WikiEvents.emit(
-              "database:launch",
+            WikiLog.system(
               `>   "${table.tableName}" will be re-synced in ${table.sync.options.waitMinutesBeforeOnChangeSync} minute...`,
             );
 
@@ -169,15 +168,9 @@ export class WikiDatabase {
               "168h",
             );
             if (!isRefresh) {
-              WikiEvents.emit(
-                "database:launch",
-                `>   "${table.tableName}" stored`,
-              );
+              WikiLog.system(`>   "${table.tableName}" stored`);
             } else {
-              WikiEvents.emit(
-                "database:launch",
-                `>   "${table.tableName}" refreshed`,
-              );
+              WikiLog.system(`>   "${table.tableName}" refreshed`);
             }
           }
 
@@ -188,13 +181,9 @@ export class WikiDatabase {
               JSON.stringify(request.data, null, 2),
             );
             if (!isRefresh) {
-              WikiEvents.emit(
-                "database:launch",
-                `>   "${table.tableName}" stored in file system`,
-              );
+              WikiLog.system(`>   "${table.tableName}" stored in file system`);
             } else {
-              WikiEvents.emit(
-                "database:launch",
+              WikiLog.system(
                 `>   "${table.tableName}" refreshed in file system`,
               );
             }
@@ -237,6 +226,6 @@ export class WikiDatabase {
         },
       )
       .subscribe();
-    WikiEvents.emit("database:launch", `>   "${table.tableName}" auto sync ON`);
+    WikiLog.system(`>   "${table.tableName}" auto sync ON`);
   }
 }

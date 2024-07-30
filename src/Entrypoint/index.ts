@@ -10,20 +10,20 @@
  * Use `npm run docker` to run with docker and reverse proxy all requests from port 80.
  */
 
-import { WikiEvents } from "../Modules/LogsModule";
 import { preLaunch } from "./preLaunch";
 import { loadEnvironment } from "./loadEnvironment";
 import { loadServices } from "./loadServices";
+import { WikiLog } from "../Modules/LogsModule";
 
 (async () => {
   preLaunch();
 
-  WikiEvents.emit("system:launch", `--- LAUNCHING ---`);
-  WikiEvents.emit("system:launch", `Date: ${new Date().toISOString()}\n`);
+  WikiLog.system(`--- LAUNCHING ---`);
+  WikiLog.system(`Date: ${new Date().toISOString()}\n`);
 
-  WikiEvents.emit("system:launch", `--- SETTING ENVIRONMENT VARIABLES ---\n`);
+  WikiLog.system(`--- SETTING ENVIRONMENT VARIABLES ---\n`);
   await loadEnvironment();
 
-  WikiEvents.emit("system:launch", `--- STARTING SERVICES ---\n`);
+  WikiLog.system(`--- STARTING SERVICES ---\n`);
   await loadServices();
 })();

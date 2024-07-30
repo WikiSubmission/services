@@ -3,7 +3,7 @@ import { APIConfig } from "../APIModule/Types/APIConfig";
 import { WikiDatabase } from "../DatabaseModule";
 import { DatabaseConfig } from "../DatabaseModule/Types/Database";
 import { WikiLibrary, LibraryConfig } from "../LibraryModule";
-import { WikiEvents } from "../LogsModule";
+import { WikiLog } from "../LogsModule";
 
 export interface ServiceConfig {
   // NOTE: `name` must be the same as the folder name created for the service.
@@ -28,7 +28,7 @@ export class WikiService {
   private async init(): Promise<WikiService> {
     if (this.config.name === "_system") return this;
 
-    WikiEvents.emit("system:launch", `[Service: ${this.config.name}]`);
+    WikiLog.system(`[Service: ${this.config.name}]`);
 
     await this.databases();
 
@@ -44,7 +44,7 @@ export class WikiService {
       !this.config.library &&
       !this.customService
     ) {
-      WikiEvents.emit("system:launch", `Nothing to launch...`);
+      WikiLog.system("Nothing to launch...");
     }
 
     return this;
@@ -52,7 +52,7 @@ export class WikiService {
 
   private async databases() {
     if (this.config.databases) {
-      WikiEvents.emit("system:launch", `Setting up databases`);
+      WikiLog.system(`Setting up databases`);
 
       await WikiDatabase.initialize(this);
     }
@@ -60,7 +60,7 @@ export class WikiService {
 
   private async apis() {
     if (this.config.api) {
-      WikiEvents.emit("system:launch", `Setting up API`);
+      WikiLog.system(`Setting up API`);
 
       await WikiAPI.initialize(this);
     }
@@ -68,7 +68,7 @@ export class WikiService {
 
   private async libraries() {
     if (this.config.library) {
-      WikiEvents.emit("system:launch", `Setting up library`);
+      WikiLog.system(`Setting up library`);
 
       await WikiLibrary.initialize(this);
     }
@@ -76,7 +76,7 @@ export class WikiService {
 
   private async customService() {
     if (this.config.customService) {
-      WikiEvents.emit("system:launch", `Setting up custom service`);
+      WikiLog.system(`Setting up custom service`);
       await this.config.customService();
     }
   }

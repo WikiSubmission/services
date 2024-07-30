@@ -1,6 +1,6 @@
 // TODO: implement file caching
 
-import { WikiService } from "../ServiceModule";
+import { WikiService } from "../WikiServiceModule";
 import { APIEndpoint } from "../APIModule/Types/APIEndpoint";
 import {
   APIJSONResponse,
@@ -8,7 +8,7 @@ import {
 } from "../APIModule/Types/APIResponse";
 import { S3Utils } from "../../Utilities/S3Utils";
 import { WikiAPI } from "../APIModule";
-import { WikiEvents } from "../LogsModule";
+import { WikiLog } from "../LogsModule";
 
 /**
  * @interface LibraryConfig
@@ -88,7 +88,7 @@ export class WikiLibrary {
               if (!objectKey) {
                 return new APIJSONResponse({
                   success: false,
-                  http_status_code: 204,
+                  http_status_code: 200,
                   error: {
                     name: "Bad Request",
                     description: `Could not find a file named '${query}' in '${this.service?.config.library?.bucket}/${folder}'. Please double check the URL.`,
@@ -110,9 +110,9 @@ export class WikiLibrary {
                   });
                 }
               } catch (error) {
-                WikiEvents.emit(
-                  "api:error",
+                WikiLog.apiError(
                   `Primary CDN unreachable (${backupUrl})`,
+                  "Modules/LibraryModule/index.ts",
                 );
                 if (this.service!.config.library!.provider.backupCDN) {
                   const backupCDNReachable = await fetch(backupUrl, {
@@ -124,9 +124,9 @@ export class WikiLibrary {
                       rewrite: true,
                     });
                   } else {
-                    WikiEvents.emit(
-                      "api:error",
+                    WikiLog.apiError(
                       `Backup CDN unreachable (${backupUrl})`,
+                      "Modules/LibraryModule/index.ts",
                     );
                   }
                 }

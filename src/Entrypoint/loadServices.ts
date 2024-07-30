@@ -1,5 +1,5 @@
-import { WikiEvents } from "../Modules/LogsModule";
-import { WikiService } from "../Modules/ServiceModule";
+import { WikiLog } from "../Modules/LogsModule";
+import { WikiService } from "../Modules/WikiServiceModule";
 import { FileUtils } from "../Utilities/FileUtils";
 
 export const ActiveServices = new Map<string, WikiService>();
@@ -41,5 +41,5 @@ export async function loadServices() {
     );
 
   console.log("\n");
-  WikiEvents.emit("system:launch", `--- READY ---\n`);
+  WikiLog.system(`--- READY ---\n`);
 }

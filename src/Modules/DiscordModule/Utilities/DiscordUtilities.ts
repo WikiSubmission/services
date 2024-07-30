@@ -12,11 +12,11 @@ import {
 } from "discord.js";
 import { DiscordModeratedGuild } from "../Types/ModeratedGuild";
 import { DiscordConfig } from "../DiscordConfig";
-import { WikiEvents } from "../../LogsModule";
 import { WikiSlashCommand } from "../Types/WikiSlashCommand";
 import { OriginalSlashCommand } from "../Types/OriginalSlashCommand";
 import { SerializedInteraction } from "../Types/SerializedInteraction";
 import { PrivateBot } from "../PrivateBot";
+import { WikiLog } from "../../LogsModule";
 
 export class DiscordUtilities {
   static serializedInteraction(interaction: any): SerializedInteraction {
@@ -90,7 +90,10 @@ export class DiscordUtilities {
 
       return result;
     } catch (error) {
-      WikiEvents.emit("discord:error", error);
+      WikiLog.discordError(
+        error,
+        "getMemberById @ Modules/DiscordModule/Utilities/DiscordUtilities.ts",
+      );
       return null;
     }
   }
@@ -111,7 +114,11 @@ export class DiscordUtilities {
         return null;
       }
     } catch (error) {
-      WikiEvents.emit("discord:error", error);
+      WikiLog.discordError(
+        error,
+        "getChannelById @ Modules/DiscordModule/Utilities/DiscordUtilities.ts",
+      );
+
       return null;
     }
   }

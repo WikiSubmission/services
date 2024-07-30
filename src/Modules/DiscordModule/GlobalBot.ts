@@ -6,9 +6,9 @@ import {
   REST,
   Routes,
 } from "discord.js";
-import { WikiEvents } from "../LogsModule";
 import { DiscordUtilities } from "./Utilities/DiscordUtilities";
 import { DiscordHelpers } from "./DiscordHelpers";
+import { WikiLog } from "../LogsModule";
 
 export class GlobalBot extends DiscordHelpers {
   // Access class through shared instance.
@@ -39,8 +39,8 @@ export class GlobalBot extends DiscordHelpers {
   async login(): Promise<void> {
     const { token } = await this.getGlobalBotCredentials();
     await this.client.login(token);
-    WikiEvents.emit(
-      "discord:launch",
+    WikiLog.discord(
+      "launch",
       `Initialized client. Username: "${this.client.user?.username}". Guilds: ${this.client.guilds.cache.size}.`,
     );
   }
@@ -51,7 +51,7 @@ export class GlobalBot extends DiscordHelpers {
    */
   async registerSlashCommands() {
     if (process.argv.includes("no-sync")) {
-      WikiEvents.emit("discord:launch", "Skipping command sync as requested");
+      WikiLog.discord("launch", "Skipping command sync as requested");
       return;
     }
 
@@ -64,13 +64,16 @@ export class GlobalBot extends DiscordHelpers {
         body: DiscordUtilities.parseCommands(globalCommands),
       });
 
-      WikiEvents.emit(
-        "discord:launch",
+      WikiLog.discord(
+        "launch",
         `Synced GLOBAL commands (${globalCommands.length}) (${globalCommands.map((command) => `/${command.name}`).join(", ")})`,
       );
     } catch (error) {
-      WikiEvents.emit("discord:error", "Failed to sync GLOBAL commands");
-      WikiEvents.emit("discord:error", error);
+      WikiLog.discordError(
+        "Failed to sync GLOBAL commands",
+        "registerSlashCommands @ Modules/DiscordModule/GlobalBot.ts",
+      );
+      WikiLog.discordError(error);
     }
 
     this.addEventListener("interactionCreate", async (interaction) => {
@@ -98,7 +101,7 @@ export class GlobalBot extends DiscordHelpers {
       try {
         await listener(...args);
       } catch (error) {
-        WikiEvents.emit("discord:error", error);
+        WikiLog.discordError(error, "Event Listener");
       }
     };
 

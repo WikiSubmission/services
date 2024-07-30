@@ -1,7 +1,6 @@
 import EventEmitter from "events";
 import { FileUtils } from "../../Utilities/FileUtils";
 import { SystemUtils } from "../../Utilities/SystemUtils";
-import { WikiEvents } from "../LogsModule";
 import { WikiSlashCommand } from "./Types/WikiSlashCommand";
 import {
   CommandInteraction,
@@ -9,8 +8,8 @@ import {
   ClientEvents,
   DiscordAPIError,
 } from "discord.js";
-import { DiscordAlert } from "./Utilities/DiscordAlertManager";
 import { DiscordUtilities } from "./Utilities/DiscordUtilities";
+import { WikiLog } from "../LogsModule";
 
 export class DiscordHelpers {
   /**
@@ -26,12 +25,9 @@ export class DiscordHelpers {
       for (const listenerFunction of listeners) {
         listenerFunction();
       }
-      WikiEvents.emit(
-        "discord:launch",
-        `Attached listeners (${listeners.length})`,
-      );
+      WikiLog.discord("launch", `Attached listeners (${listeners.length})`);
     } else {
-      WikiEvents.emit("discord:launch", `No listeners to attach`);
+      WikiLog.discord("launch", `No listeners to attach`);
     }
   }
 
@@ -66,12 +62,12 @@ export class DiscordHelpers {
         scheduleActionsFunction();
       }
 
-      WikiEvents.emit(
-        "discord:launch",
+      WikiLog.discord(
+        "launch",
         `Scheduled actions (${scheduleActions.length})`,
       );
     } else {
-      WikiEvents.emit("discord:launch", `No actions to schedule`);
+      WikiLog.discord("launch", `No actions to schedule`);
     }
   }
 
@@ -177,45 +173,26 @@ export class DiscordHelpers {
 
         this.logInteraction(result);
       } catch (error) {
-        WikiEvents.emit("discord:error", error);
+        WikiLog.discordError(
+          error,
+          "slashCommandHandler @ Modules/DiscordModule/DiscordHelpers.ts",
+        );
       }
     }
   }
 
   logInteraction(interaction: CommandInteraction | ButtonInteraction) {
-    WikiEvents.emit("discord:interactionCreate", interaction);
-
-    if (interaction instanceof CommandInteraction) {
-      new DiscordAlert("1080271049377202177").send("DEV-EVENTLOG", {
-        content: `\`\`\`[interactionCreate] ${DiscordUtilities.parseInteraction(interaction)}\`\`\``,
-        flags: ["SuppressNotifications"],
-      });
-    }
+    WikiLog.discordEvent(
+      "interactionCreate",
+      DiscordUtilities.parseInteraction(interaction) || "--",
+    );
   }
 
   logEvent(event: keyof ClientEvents, description: string) {
-    WikiEvents.emit("discord:event", `[${event}] ${description}`);
-
-    new DiscordAlert("1080271049377202177").send("DEV-EVENTLOG", {
-      content: `\`\`\`[${event}] ${description}\`\`\``,
-      flags: ["SuppressNotifications"],
-    });
+    WikiLog.discordEvent(event, description);
   }
 
   logError(error: DiscordAPIError | Error | any, sourceHint?: string) {
-    const description =
-      error instanceof DiscordAPIError
-        ? `[DiscordAPIError] ${error.name}: ${error.message} (${error.status})${sourceHint ? ` (${sourceHint})` : ""}`
-        : error instanceof Error
-          ? `[Internal Error] ${error.message}${sourceHint ? ` (${sourceHint})` : ""}`
-          : typeof error === "string"
-            ? `[Internal Error] ${error}${sourceHint ? ` (${sourceHint})` : ""}`
-            : `[Unknown Error] ${error?.message || "--"}${sourceHint ? ` (${sourceHint})` : ""}`;
-
-    WikiEvents.emit("discord:error", description);
-
-    new DiscordAlert("1080271049377202177").send("DEV-ERRORLOG", {
-      content: `\`\`\`${description}\`\`\``,
-    });
+    WikiLog.discordError(error, sourceHint);
   }
 }

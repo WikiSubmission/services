@@ -1,12 +1,12 @@
 import { v4 as uuidv4 } from "uuid";
 import { PromiseWithChild, exec } from "child_process";
-import { WikiEvents } from "../Modules/LogsModule";
 import { EnvironmentVariables } from "../Vars/EnvironmentVariables";
 import { WikiCache } from "../Modules/CachingModule";
 import { TimeStrings } from "../Vars/TimeStrings";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { S3Client } from "@aws-sdk/client-s3";
 import util from "util";
+import { WikiLog } from "../Modules/LogsModule";
 
 export class SystemUtils {
   static getEnv(
@@ -15,9 +15,10 @@ export class SystemUtils {
   ): string | null {
     let result = process.env[key];
     if (!result && doNotCrashIfNotFound !== true) {
-      WikiEvents.emit(
-        "system:critical-error",
+      WikiLog.systemError(
         `Failed to access environment variable "${key}"`,
+        "Utilities/SystemUtilities.ts",
+        true,
       );
     }
     return result ? result : null;
@@ -27,34 +28,30 @@ export class SystemUtils {
     secret: EnvironmentVariables,
     throwErrorOnFail?: boolean,
   ): Promise<string> {
-    return await SystemUtils.cachedFunction(
-      `Env:${secret}`,
-      "5m",
-      async () => {
-        try {
-          const client = await this.getSupabaseClient();
+    return await SystemUtils.cachedFunction(`Env:${secret}`, "5m", async () => {
+      try {
+        const client = await this.getSupabaseClient();
 
-          const request = await client
-            .from("Secrets")
-            .select("*")
-            .eq("key", secret)
-            .single();
+        const request = await client
+          .from("Secrets")
+          .select("*")
+          .eq("key", secret)
+          .single();
 
-          if (request && request.status === 200 && request.data?.value) {
-            return request.data.value as string;
+        if (request && request.status === 200 && request.data?.value) {
+          return request.data.value as string;
+        } else {
+          if (throwErrorOnFail) {
+            throw new Error(`Failed to get environment variable: ${secret}`);
           } else {
-            if (throwErrorOnFail) {
-              throw new Error(`Failed to get environment variable: ${secret}`);
-            } else {
-              console.warn(`Failed to get environment variable: ${secret}`);
-              return "";
-            }
+            console.warn(`Failed to get environment variable: ${secret}`);
+            return "";
           }
-        } catch (error: any) {
-          throw new Error(`Supabase client error: ${error?.message || "--"}`);
         }
-      },
-    );
+      } catch (error: any) {
+        throw new Error(`Supabase client error: ${error?.message || "--"}`);
+      }
+    });
   }
 
   static async cachedFunction<T>(

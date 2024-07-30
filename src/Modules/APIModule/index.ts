@@ -5,8 +5,7 @@ import {
   APIRedirectResponse,
 } from "./Types/APIResponse";
 import { APIRequestEvent, APIResponseEvent } from "./Types/APIEmittedEvents";
-import { WikiService } from "../ServiceModule";
-import { WikiEvents } from "../LogsModule";
+import { WikiService } from "../WikiServiceModule";
 import { WikiCache } from "../CachingModule";
 import { APIEndpoint } from "./Types/APIEndpoint";
 import { APIError } from "./Types/APIError";
@@ -17,6 +16,7 @@ import { HostAddress } from "../../Vars/Host";
 import { Readable } from "stream";
 import helmet from "helmet";
 import * as http from "http";
+import { WikiLog } from "../LogsModule";
 
 /**
  * @class WikiAPI
@@ -100,13 +100,12 @@ export class WikiAPI {
           let errorThrown: APIError | null = null;
 
           // Emit request.
-          WikiEvents.emit("api:request", this.parseRequest(req, id));
+          WikiLog.apiRequest(this.parseRequest(req, id));
 
           // Emit response, when finished.
           res.on("finish", async () => {
             const duration = Date.now() - now;
-            WikiEvents.emit(
-              "api:response",
+            WikiLog.apiResponse(
               this.parseResponse(res, id, duration, errorThrown),
             );
           });
@@ -172,13 +171,9 @@ export class WikiAPI {
         const entry = await WikiCache.get(this.service, req.originalUrl);
         if (
           entry &&
-          (
-            entry instanceof APIJSONResponse
-            ||
-            entry instanceof APIFileResponse
-            ||
-            entry instanceof APIRedirectResponse
-          )
+          (entry instanceof APIJSONResponse ||
+            entry instanceof APIFileResponse ||
+            entry instanceof APIRedirectResponse)
         ) {
           return entry;
         }
@@ -347,8 +342,8 @@ export class WikiAPI {
         const endpoints =
           typeof this.service.config.api.endpoints === "string"
             ? await FileUtils.getDefaultExportsFromDirectory<APIEndpoint>(
-              `/${this.service.config.name}/Routes`,
-            )
+                `/${this.service.config.name}/Routes`,
+              )
             : this.service.config.api.endpoints;
 
         // Ensure broader / catch-all endpoints are lined up last as Express relies on this order to route requests.
@@ -428,14 +423,13 @@ export class WikiAPI {
     this.httpServer.listen(port, host);
 
     const endpoints = await this.getEndpoints();
-    WikiEvents.emit(
-      "service:launch",
+    WikiLog.api(
+      "launch",
       `>   "${identifier}" LIVE (http://${host}:${port}) (${endpoints.map((i) => `${i.route}`).join(", ")})`,
     );
 
-    this.httpServer.on("error", (err: NodeJS.ErrnoException) => {
-      console.error(err);
-      WikiEvents.emit("system:critical-error", `Port "${port}" not accessible`);
+    this.httpServer.on("error", () => {
+      WikiLog.apiError(`Port "${port}" not accessible`, "WikiAPI class", true);
     });
   }
 }

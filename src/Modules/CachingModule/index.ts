@@ -1,5 +1,5 @@
 import { MemoryCache, caching } from "cache-manager";
-import { WikiService } from "../ServiceModule";
+import { WikiService } from "../WikiServiceModule";
 import { TimeStrings } from "../../Vars/TimeStrings";
 import { SystemUtils } from "../../Utilities/SystemUtils";
 

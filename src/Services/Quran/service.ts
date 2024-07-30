@@ -1,5 +1,5 @@
 import { Ports } from "../../Vars/Ports";
-import { WikiService } from "../../Modules/ServiceModule";
+import { WikiService } from "../../Modules/WikiServiceModule";
 
 export default async function service(): Promise<WikiService> {
   return await WikiService.create({

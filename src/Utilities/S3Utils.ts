@@ -24,21 +24,17 @@ export interface PutObjectCommandOutputExtended extends PutObjectCommandOutput {
 
 export class S3Utils {
   static async listObjects(additionalParams?: ListObjectsV2CommandInput) {
-    return await SystemUtils.cachedFunction(
-      "S3ListObjects",
-      "3s",
-      async () => {
-        const client = await SystemUtils.getS3Client();
-        const response = await client.send(
-          new ListObjectsV2Command({
-            ...additionalParams,
-            Bucket: "wikisubmission",
-          }),
-        );
+    return await SystemUtils.cachedFunction("S3ListObjects", "3s", async () => {
+      const client = await SystemUtils.getS3Client();
+      const response = await client.send(
+        new ListObjectsV2Command({
+          ...additionalParams,
+          Bucket: "wikisubmission",
+        }),
+      );
 
-        return response;
-      },
-    );
+      return response;
+    });
   }
 
   static async getObject(
@@ -119,34 +115,30 @@ export class S3Utils {
     key: string,
     additionalParams?: ListObjectsV2CommandInput,
   ): Promise<string | null> {
-    return SystemUtils.cachedFunction(
-      `S3:LookupObjectKey`,
-      "1s",
-      async () => {
-        const { Contents } = await this.listObjects({
-          Prefix: `${key.split("/")[0]}`,
-          Bucket: "wikisubmission",
-          ...additionalParams,
-        });
+    return SystemUtils.cachedFunction(`S3:LookupObjectKey`, "1s", async () => {
+      const { Contents } = await this.listObjects({
+        Prefix: `${key.split("/")[0]}`,
+        Bucket: "wikisubmission",
+        ...additionalParams,
+      });
 
-        const filteredKeys = Contents?.map((obj) => obj.Key).filter((k) =>
-          k?.includes(key),
-        );
+      const filteredKeys = Contents?.map((obj) => obj.Key).filter((k) =>
+        k?.includes(key),
+      );
 
-        const sortedKeys = filteredKeys?.sort((a, b) => {
-          if (a && b) {
-            if (a.length !== b.length) {
-              return a.length - b.length;
-            }
-            return a.localeCompare(b);
+      const sortedKeys = filteredKeys?.sort((a, b) => {
+        if (a && b) {
+          if (a.length !== b.length) {
+            return a.length - b.length;
           }
-          return 0;
-        });
+          return a.localeCompare(b);
+        }
+        return 0;
+      });
 
-        const resolvedKey = sortedKeys?.[0];
+      const resolvedKey = sortedKeys?.[0];
 
-        return resolvedKey || null;
-      },
-    );
+      return resolvedKey || null;
+    });
   }
 }
