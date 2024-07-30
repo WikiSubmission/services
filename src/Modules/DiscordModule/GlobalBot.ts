@@ -77,9 +77,7 @@ export class GlobalBot extends DiscordHelpers {
     this.addEventListener("interactionCreate", async (interaction) => {
       if (interaction.isCommand()) {
         // Find the command that matches the interaction by matching the name.
-        for (const slashCommand of globalCommands.filter(
-          (c) => c.guildSpecific === undefined,
-        )) {
+        for (const slashCommand of globalCommands) {
           this.slashCommandHandler(slashCommand, interaction);
         }
       }
