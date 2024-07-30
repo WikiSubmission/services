@@ -47,7 +47,7 @@ export default function listener(): void {
     });
 
     await new DiscordAlert(message.guildId).send("CHOOSE-ROLES", {
-      content: `🙏 **Gender**`,
+      content: `🙋‍♂️ **Gender**`,
       components: [
         {
           type: 1,
