@@ -8,7 +8,7 @@ import { DiscordUtilities } from "./DiscordUtilities";
 
 export class DiscordQuranRequest extends DiscordRequest {
   constructor(
-    interaction: any,
+    public interaction: any,
     public page: number = 1,
   ) {
     super(interaction);
