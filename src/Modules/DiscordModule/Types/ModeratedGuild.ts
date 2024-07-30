@@ -24,6 +24,7 @@ export interface DiscordModeratedGuild {
   };
   trustedRoles: string[];
   keyVoiceChannels: {
+    name: string;
     voice: string;
     text: string;
     wrongChannelAlerts?: boolean;
