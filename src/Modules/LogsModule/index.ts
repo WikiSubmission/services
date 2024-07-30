@@ -4,7 +4,7 @@ import {
   APIResponseEvent,
 } from "../APIModule/Types/APIEmittedEvents";
 import { DiscordAlert } from "../DiscordModule/Utilities/DiscordAlertManager";
-import { WebhookLog } from "./Webhook";
+import { WebhookLog } from "./WebhookLog";
 
 type BaseLogTypes = "launch" | "error";
 
