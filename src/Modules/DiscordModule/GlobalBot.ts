@@ -18,8 +18,6 @@ export class GlobalBot extends DiscordHelpers {
   client: Client = new Client({
     intents: [
       GatewayIntentBits.Guilds,
-      GatewayIntentBits.GuildScheduledEvents,
-      GatewayIntentBits.GuildVoiceStates,
     ],
     presence: {
       status: "online",
