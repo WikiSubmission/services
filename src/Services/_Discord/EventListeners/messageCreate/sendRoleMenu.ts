@@ -46,6 +46,27 @@ export default function listener(): void {
       ],
     });
 
+    await new DiscordAlert(message.guildId).send("CHOOSE-ROLES", {
+      content: `🙏 **Gender**`,
+      components: [
+        {
+          type: 1,
+          components: [
+            {
+              type: 3,
+              custom_id: `role_update`,
+              options: moderatedGuild.choosableRoles
+                .filter((role) => role.category === "Gender")[0]
+                ?.roleNames.map((roleName) => ({
+                  label: roleName,
+                  value: `Gender:${PrivateBot.shared.client.guilds.cache.find((g) => g.id === moderatedGuild.id)?.roles.cache.find((r) => r.name === roleName)?.id}:${roleName}`,
+                })),
+            },
+          ],
+        },
+      ],
+    });
+
     await SystemUtils.stimulateDelay(500);
 
     await new DiscordAlert(message.guildId).send("CHOOSE-ROLES", {
