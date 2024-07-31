@@ -259,6 +259,7 @@ export class DiscordConfig {
             "Ukranian",
             "Bosnian",
           ],
+          allowMultiple: true,
         },
         {
           category: "Reminders",
@@ -268,6 +269,7 @@ export class DiscordConfig {
             "Recitation Ping",
             "Meditation Ping",
           ],
+          allowMultiple: true,
         },
       ],
     },
