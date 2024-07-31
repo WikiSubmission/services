@@ -145,7 +145,7 @@ export class DiscordQuranRequest extends DiscordRequest {
   }
 
   private description(data: DataQuranItem[]): string[] {
-    const noCommentary = this.getStringInput("ignore-commentary") === "yes";
+    const noCommentary = this.getStringInput("no-footnotes") === "yes";
     const arabic = this.getStringInput("with-arabic") === "yes";
     const transliteration =
       this.getStringInput("with-transliteration") === "yes";

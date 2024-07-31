@@ -22,7 +22,7 @@ export default function command(): WikiSlashCommand {
         ],
       },
       {
-        name: "ignore-commentary",
+        name: "no-footnotes",
         type: "STRING",
         description: "Ignore subtitles & footnotes?",
         choices: [
