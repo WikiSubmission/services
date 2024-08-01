@@ -26,6 +26,8 @@ export class DiscordHelpers {
         listenerFunction();
       }
       WikiLog.discord("launch", `Attached listeners (${listeners.length})`);
+
+      if (process.env.SAFE_MODE === "true") WikiLog.discord("launch", `Safe mode detected. Will avoid handling events for Submission Server.`);
     } else {
       WikiLog.discord("launch", `No listeners to attach`);
     }
