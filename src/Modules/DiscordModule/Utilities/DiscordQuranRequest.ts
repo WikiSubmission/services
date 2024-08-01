@@ -152,6 +152,8 @@ export class DiscordQuranRequest extends DiscordRequest {
 
     let description = "";
 
+    const westernNumeralsPreferenceUsers = ["835330532584980491", "771800475410497576"];
+
     let [iteration, maxVerses, reachedLimit] = [0, 300, false];
 
     for (const i of data || []) {
@@ -169,7 +171,7 @@ export class DiscordQuranRequest extends DiscordRequest {
           this.interaction.commandName === "equran" ||
           this.interaction.commandName === "aquran"
         ) {
-          description += `### (${this.interaction.user?.id === "835330532584980491" ? i.verse_id : i.verse_id_arabic}) ${i.verse_text_arabic}\n\n`;
+          description += `### (${westernNumeralsPreferenceUsers.includes(this.interaction.user?.id) ? i.verse_id : i.verse_id_arabic}) ${i.verse_text_arabic}\n\n`;
         }
 
         if (transliteration) {
