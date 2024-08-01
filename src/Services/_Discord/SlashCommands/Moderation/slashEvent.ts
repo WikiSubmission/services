@@ -26,11 +26,19 @@ export default function command(): WikiSlashCommand {
         description: "Event channel? (choose a VOICE channel)",
         type: "STRING",
         choices: [
-          ...DiscordConfig.knownGuilds.find(i => i.name === (process.env.NODE_ENV === "development" ? "WikiSubmission Developers" : "Submission"))!.keyVoiceChannels.map(v=>({
-            name: v.name,
-            value: v.voice
-          }))
-        ]
+          ...DiscordConfig.knownGuilds
+            .find(
+              (i) =>
+                i.name ===
+                (process.env.NODE_ENV === "development"
+                  ? "WikiSubmission Developers"
+                  : "Submission"),
+            )!
+            .keyVoiceChannels.map((v) => ({
+              name: v.name,
+              value: v.voice,
+            })),
+        ],
       },
       {
         name: "description",

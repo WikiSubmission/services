@@ -23,7 +23,9 @@ export default function listener(): void {
             const result = await suspect.ban(
               interaction.member,
               undefined,
-              reason ? `${reason} - source: ${interaction.user.username}` : `source: ${interaction.user.username}`,
+              reason
+                ? `${reason} - source: ${interaction.user.username}`
+                : `source: ${interaction.user.username}`,
             );
             if (result instanceof Error) {
               await interaction.editReply({

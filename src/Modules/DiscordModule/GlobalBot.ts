@@ -16,9 +16,7 @@ export class GlobalBot extends DiscordHelpers {
 
   // Create Discord client.
   client: Client = new Client({
-    intents: [
-      GatewayIntentBits.Guilds,
-    ],
+    intents: [GatewayIntentBits.Guilds],
     presence: {
       status: "online",
       activities: [

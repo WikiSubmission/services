@@ -148,7 +148,11 @@ export class DiscordConfig {
           wrongChannelAlerts: true,
         },
         // VC3
-        { name: "VC3", voice: "1075949658792284242", text: "1075986349607358544" },
+        {
+          name: "VC3",
+          voice: "1075949658792284242",
+          text: "1075986349607358544",
+        },
         // VC4
         {
           name: "VC4",
@@ -157,9 +161,17 @@ export class DiscordConfig {
           silentLeave: true,
         },
         // VCLounge
-        { name: "VCLounge", voice: "965278781071847474", text: "928350359309676614" },
+        {
+          name: "VCLounge",
+          voice: "965278781071847474",
+          text: "928350359309676614",
+        },
         // VCSubmitters
-        { name: "VCSubmitters",voice: "985705908560617492", text: "985705731330293870" },
+        {
+          name: "VCSubmitters",
+          voice: "985705908560617492",
+          text: "985705731330293870",
+        },
       ],
       antiRaidProtectedChannels: [
         "915639051967676496",

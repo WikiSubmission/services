@@ -121,11 +121,22 @@ export class PrivateBot extends DiscordHelpers {
       try {
         // If SAFE_MODE environment variable is 'true', avoid handling Submission Server events. This is to avoid duplicate event triggers during tests while a production instance is running.
         if (process.env.SAFE_MODE === "true") {
-          const submissionServerId = '911268076933230662';
+          const submissionServerId = "911268076933230662";
 
-          const isGuildRelated = (data: any): data is Guild | GuildChannel | GuildMember | PartialGuildMember | Message | Interaction | GuildScheduledEvent => {
-            return (data.guild && data.guild.id === submissionServerId) ||
-              (data.guildId && data.guildId === submissionServerId);
+          const isGuildRelated = (
+            data: any,
+          ): data is
+            | Guild
+            | GuildChannel
+            | GuildMember
+            | PartialGuildMember
+            | Message
+            | Interaction
+            | GuildScheduledEvent => {
+            return (
+              (data.guild && data.guild.id === submissionServerId) ||
+              (data.guildId && data.guildId === submissionServerId)
+            );
           };
 
           if (isGuildRelated(args[0])) return;
