@@ -169,7 +169,7 @@ export class DiscordQuranRequest extends DiscordRequest {
           this.interaction.commandName === "equran" ||
           this.interaction.commandName === "aquran"
         ) {
-          description += `### (${i.verse_id_arabic}) ${i.verse_text_arabic}\n\n`;
+          description += `### (${this.interaction.user?.id === "835330532584980491" ? i.verse_id : i.verse_id_arabic}) ${i.verse_text_arabic}\n\n`;
         }
 
         if (transliteration) {
