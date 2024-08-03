@@ -73,7 +73,7 @@ export default function listener(): void {
         // RULE 2 (usually detects same-channel spam)
         // This condition is VIOLATED once you've sent over 10 messages during the 15 second period.
         (antiRaidProfile.channels.length <= 2 &&
-          antiRaidProfile.content.length <= 9)
+          antiRaidProfile.content.length <= 13)
       ) {
         // If both rules are satisfied, no red flags have been raised yet: simply update the existing temporary Anti-Raid profile.
         await WikiCache.set(
