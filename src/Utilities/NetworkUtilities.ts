@@ -32,6 +32,7 @@ export class NetworkUtils {
       path,
       undefined,
       options,
+      true
     );
   }
 
@@ -41,6 +42,7 @@ export class NetworkUtils {
     path: string,
     body?: Object,
     options?: RequestOptions,
+    isInternal?: boolean
   ): Promise<T | null> {
     const requestURL = `${baseEndpoint}${path}`;
 
@@ -98,11 +100,11 @@ export class NetworkUtils {
             `Backup endpoint failed ("${backupError?.message}")`,
             backupError?.message || "--",
           );
-          return null;
+          return isInternal ? backupError : null;
         }
       } else {
         console.error(`Network Error -->`, error);
-        return null;
+        return isInternal ? error : null;
       }
     }
   }
