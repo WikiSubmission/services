@@ -123,9 +123,10 @@ export default function listener(): void {
       });
 
       for (const [_, attachment] of message.attachments) {
+        const filePath = `tmp/${message.author.id}-${SystemUtils.generateUUID(4)}-${attachment.name}`;
         // Create a temporary backup. The file is stored in the 'wikisubmission' S3 bucket under the _internal/cache directory. The file is named as follows: "<user_id>-<attachment_name>". The Library API exposes this folder: e.g. docs.wikisubmission.org/library/tmp/<file_name>. The file will expire after 7 days.
         await S3Utils.uploadObjectFromURL(
-          `tmp/${message.member.id}-${attachment.name}`,
+          `${filePath}`,
           `${attachment.proxyURL}`,
           attachment.size,
           attachment.contentType || "application/octet-stream",
@@ -134,7 +135,7 @@ export default function listener(): void {
         // Emit a server event.
         PrivateBot.shared.logEvent(
           "messageCreate",
-          `Message containing media ("https://docs.wikisubmission.org/library/tmp/${message.author.id}-${attachment.name}") from "${message.member.user.username}" has been blocked`,
+          `Message containing media ("https://docs.wikisubmission.org/library/${filePath}") from "${message.member.user.username}" has been blocked`,
         );
 
         // Notify staff.
