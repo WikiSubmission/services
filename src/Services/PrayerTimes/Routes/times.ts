@@ -115,8 +115,8 @@ export default function route(): APIEndpoint {
             error: {
               name: "Google Maps API Error",
               description: `Location "${requestQuery}" not found. Try being more specific.`,
-              fault: "server",
-              severity: "high",
+              fault: "client",
+              severity: "medium",
             },
           });
         }
