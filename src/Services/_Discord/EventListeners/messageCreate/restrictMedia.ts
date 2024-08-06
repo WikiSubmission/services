@@ -153,7 +153,7 @@ export default function listener(): void {
                 },
                 {
                   name: "Attachment",
-                  value: `${attachment.name} | [URL](https://docs.wikisubmission.org/library/tmp/${message.author.id}-${attachment.name})`,
+                  value: `${attachment.name} | [URL](https://docs.wikisubmission.org/library/${filePath})`,
                 },
                 {
                   name: "Channel",
