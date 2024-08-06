@@ -114,7 +114,7 @@ export default function route(): APIEndpoint {
             http_status_code: 200,
             error: {
               name: "Google Maps API Error",
-              description: `Unable to find location data for "${requestQuery}": ${CityData?.status || "--"} (Google Geocoding API)`,
+              description: `Location "${requestQuery}" not found: ${CityData?.status || "--"} (Google Geocoding API). Try being more specific.`,
               fault: "server",
               severity: "high",
             },
