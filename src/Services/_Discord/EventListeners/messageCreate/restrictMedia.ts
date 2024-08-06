@@ -124,7 +124,7 @@ export default function listener(): void {
 
       for (const [_, attachment] of message.attachments) {
         const filePath = `tmp/${message.author.id}-${SystemUtils.generateUUID(4)}-${attachment.name}`;
-        // Create a temporary backup. The file is stored in the 'wikisubmission' S3 bucket under the _internal/cache directory. The file is named as follows: "<user_id>-<attachment_name>". The Library API exposes this folder: e.g. docs.wikisubmission.org/library/tmp/<file_name>. The file will expire after 7 days.
+        // Create a temporary backup. The file is stored in the 'wikisubmission' bucket under the tmp directory at root. The file is named as follows: "<user_id>-<unique_identifier>-<attachment_name>". The Library API exposes this folder: e.g. docs.wikisubmission.org/library/tmp/<file_name>.
         await S3Utils.uploadObjectFromURL(
           `${filePath}`,
           `${attachment.proxyURL}`,
