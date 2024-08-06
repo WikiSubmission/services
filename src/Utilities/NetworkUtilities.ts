@@ -81,7 +81,7 @@ export class NetworkUtils {
         try {
           const backupURL = `${options.backupEndpoint}${path}`;
           const fetchFunction = async () =>
-            await this.__fetch<T>(method, backupURL, body, options?.headers);
+            await this.__fetch<T>(method, backupURL, body, options?.headers, isInternal);
           const data = limiter
             ? await limiter.schedule(fetchFunction)
             : await fetchFunction();
@@ -114,6 +114,7 @@ export class NetworkUtils {
     url: string,
     body?: { [string: string]: any },
     headers?: { [key: string]: string },
+    isInternal?: boolean
   ): Promise<T> {
     headers = { "Content-Type": "application/json", ...headers };
 
@@ -123,7 +124,7 @@ export class NetworkUtils {
       body: body ? JSON.stringify(body) : undefined,
     });
 
-    if (!request.ok) {
+    if (!request.ok && !isInternal) {
       throw new Error(
         `Request (${method} "${url}") failed with status ${request.status}${request.statusText ? ` ${request.statusText}` : ""}`,
       );
