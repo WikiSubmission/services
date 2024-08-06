@@ -111,7 +111,7 @@ export default function route(): APIEndpoint {
         if (!CityData || CityData?.status !== "OK") {
           return new APIJSONResponse({
             success: false,
-            http_status_code: 400,
+            http_status_code: 200,
             error: {
               name: "Google Maps API Error",
               description: `Unable to find location data for "${requestQuery}": ${CityData?.status || "--"} (Google Geocoding API)`,
@@ -149,7 +149,7 @@ export default function route(): APIEndpoint {
         if (!Response.coordinates.latitude || !Response.coordinates.latitude) {
           return new APIJSONResponse({
             success: false,
-            http_status_code: 500,
+            http_status_code: 200,
             error: {
               name: "Unable to Determine Coordinates",
               description: `Could not resolve valid coordinates for the searched location "${requestQuery}"`,
@@ -176,7 +176,7 @@ export default function route(): APIEndpoint {
         if (!TimezoneData || TimezoneData.status !== "OK") {
           return new APIJSONResponse({
             success: false,
-            http_status_code: 500,
+            http_status_code: 200,
             error: {
               name: "Google Timezone API Error",
               description: `Unable to find timezone data for "${requestQuery}" (${latitude}, ${longitude}): ${CityData?.status || "--"} (Google Timezone API)`,
@@ -220,7 +220,7 @@ export default function route(): APIEndpoint {
         if (!UTCScheduleData || !LocalScheduleData) {
           return new APIJSONResponse({
             success: false,
-            http_status_code: 500,
+            http_status_code: 200,
             error: {
               name: "Calculation Error",
               description: `Unable to calculate prayer times for "${requestQuery}" using resolved coordinates of "${latitude}, ${longitude}"`,
